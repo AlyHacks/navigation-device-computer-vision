@@ -24,10 +24,10 @@ while cap.isOpened():
         #get the maximum amount of contour or area and define its position, or get the center of the largest area
         #if its in a certain space on the frame, then return a message saying it is on left, right etc
         for c in contours:
-            M = cv2.moments(c)
-            cX = int(M["m10"] / M["m00"])
+            M = cv2.moments(c) #the moments capture basic geometric data about shape
+            cX = int(M["m10"] / M["m00"]) #gets the x coordinate of the center of the contour, by dividing the first order moment by the zeroth order moment
             cY = int(M["m01"] / M["m00"])
-            cv2.drawContours(frame1, [c], -1, (0, 255, 0), 2)
+            cv2.drawContours(frame1, [c], -1, (0, 255, 0), 2)#remove as needed
             cv2.circle(frame1, (cX, cY), 7, (255, 255, 255), -1)    
         
             if cX in range (0, 320):
