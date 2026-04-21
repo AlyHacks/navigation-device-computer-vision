@@ -23,14 +23,21 @@ while cap.isOpened():
             continue
         #get the maximum amount of contour or area and define its position, or get the center of the largest area
         #if its in a certain space on the frame, then return a message saying it is on left, right etc
-        if x in range (0, 320):
-            print("object on left")
-        elif x in range (320, 640):
-            print("object on center left")
-        elif x in range (640, 960):
-            print("object on center right")
-        elif x in range (960, 1280):
-            print("object on right")
+        for c in contours:
+            M = cv2.moments(c)
+            cX = int(M["m10"] / M["m00"])
+            cY = int(M["m01"] / M["m00"])
+            cv2.drawContours(frame1, [c], -1, (0, 255, 0), 2)
+            cv2.circle(frame1, (cX, cY), 7, (255, 255, 255), -1)    
+        
+            if cX in range (0, 320):
+                print("object on left")
+            elif cX in range (320, 640):
+                print("object on center left")
+            elif cX in range (640, 960):
+                print("object on center right")
+            elif cX in range (960, 1280):
+                print("object on right")
 
         cv2.rectangle(frame1, (x, y), (x+w, y+h), (0,255,0), 2)
 
