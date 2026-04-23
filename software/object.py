@@ -23,11 +23,11 @@ while cap.isOpened():
     for contour in contours:
         (x, y, w, h) = cv2.boundingRect(contour) #finds the bounding rectangle of the contour, and returns the x and y coordinates of the top left corner, and the width and height of the rectangle    
 
-        if cv2.contourArea(contour) < 1000:
+        if cv2.contourArea(contour) < 30000:
             continue
         #get the maximum amount of contour or area and define its position, or get the center of the largest area
         #if its in a certain space on the frame, then return a message saying it is on left, right etc
-        if cv2.contourArea(contour) >= 1000:
+        if cv2.contourArea(contour) >= 30000:
             largest_contour = max(contours, key=cv2.contourArea)
             cv2.rectangle(frame1, (x, y), (x+w, y+h), (0,255,0), 2)
             for c in contours:
