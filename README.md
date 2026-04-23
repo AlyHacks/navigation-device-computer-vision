@@ -15,19 +15,19 @@ Before you continue with the pytorch installation instructions, install and acti
 
 The source tells you to first clone the pytorch repository in order to enter the file saved in it: 
 
-'''
+```
 git clone https://github.com/pytorch/pytorch
 cd pytorch
 git submodule sync
 git submodule update --init --recursive
-'''
+```
 
 This is directly pasted from the source above.
 Then, you run this command:
 
-'''
+```
 pip install --group dev
-'''
+```
 
 Depending on your PC type (i.e. Mac, Linux, Windows), use the following appropriate options to continue installing. 
 
@@ -35,29 +35,29 @@ Depending on your PC type (i.e. Mac, Linux, Windows), use the following appropri
 
 Run the command in your terminal:
 
-'''
+```
 pip3 install opencv-python
-'''
+```
 
 If it runs into a wheel developing error, run the following:
 
-'''
+```
 pip install opencv-python-headless
-'''
+```
 
 3. Install YOLO
 
 In order to install YOLO from ultralytics, you need numpy versions less than numpy 2.
 Run this command:
 
-'''
+```
 pip3 install "numpy<2" 
-'''
+```
 
 Then, run this command:
 
-'''
+```
 pip3 install ultralytics
-'''
+```
 
 
