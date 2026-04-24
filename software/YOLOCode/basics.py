@@ -12,7 +12,7 @@ cap = cv2.VideoCapture(0)
 while True:
     ret, frame = cap.read()
     if not ret:
-        break
+        break #same as the object.py
     results = model.predict(frame)
     image = results[0].plot()
     cv2.imshow('YOLOv8 Detection', image)
