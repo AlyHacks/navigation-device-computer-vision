@@ -38,11 +38,11 @@ while cap.isOpened():
                 if c is largest_contour:
                     cv2.circle(frame1, (cX, cY), 7, (255, 255, 255), -1)    
             
-                if cX in range (0, 426):
+                if cX in range (0, 425):
                     print("object on left")
                 elif cX in range (426, 853):
                     print("object on center ")
-                elif cX in range (853, 1280):
+                elif cX in range (854, 1280):
                     print("object on  right")
 
 
