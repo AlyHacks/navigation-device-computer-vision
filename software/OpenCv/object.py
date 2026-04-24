@@ -1,5 +1,6 @@
 import cv2
 import numpy as np
+import time
 #detect regions of interest
 cap = cv2.VideoCapture(0)
 
@@ -7,6 +8,9 @@ ret, frame1 = cap.read()
 ret, frame2 = cap.read() #ret is a bool t/f if grabbed frame, frame is actual video of pixel
 if not ret:
     print("failed to grab frame") 
+
+fps = cap.get(cv2.CAP_PROP_FPS)
+
 
 while cap.isOpened():
     diff = cv2.absdiff(frame1, frame2) #finds difference, or movement between different frames
@@ -19,22 +23,31 @@ while cap.isOpened():
     for contour in contours:
         (x, y, w, h) = cv2.boundingRect(contour) #finds the bounding rectangle of the contour, and returns the x and y coordinates of the top left corner, and the width and height of the rectangle    
 
-        if cv2.contourArea(contour) < 600:
+        if cv2.contourArea(contour) < 30000:
             continue
         #get the maximum amount of contour or area and define its position, or get the center of the largest area
         #if its in a certain space on the frame, then return a message saying it is on left, right etc
-        if x in range (0, 320):
-            print("object on left")
-        elif x in range (320, 640):
-            print("object on center left")
-        elif x in range (640, 960):
-            print("object on center right")
-        elif x in range (960, 1280):
-            print("object on right")
+        if cv2.contourArea(contour) >= 30000:
+            largest_contour = max(contours, key=cv2.contourArea)
+            cv2.rectangle(frame1, (x, y), (x+w, y+h), (0,255,0), 2)
+            for c in contours:
+                M = cv2.moments(c) #the moments capture basic geometric data about shape
+                cX = int(M["m10"] / M["m00"]) #gets the x coordinate of the center of the contour, by dividing the first order moment by the zeroth order moment
+                cY = int(M["m01"] / M["m00"])
+                #cv2.drawContours(frame1, [c], -1, (0, 255, 0), 2)#remove as needed
+                if c is largest_contour:
+                    cv2.circle(frame1, (cX, cY), 7, (255, 255, 255), -1)    
+            
+                if cX in range (0, 426):
+                    print("object on left")
+                elif cX in range (426, 853):
+                    print("object on center ")
+                elif cX in range (853, 1280):
+                    print("object on  right")
 
-        cv2.rectangle(frame1, (x, y), (x+w, y+h), (0,255,0), 2)
 
-    cv2.drawContours(frame1, contours, -1, (0, 255, 0), 2)
+
+    #cv2.drawContours(frame1, contours, -1, (0, 255, 0), 2)
 
     cv2.imshow("video", frame1)
     frame1 = frame2
