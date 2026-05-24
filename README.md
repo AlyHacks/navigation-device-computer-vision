@@ -46,6 +46,12 @@ pip install opencv-python-headless
 ```
 
 ### 3. Install YOLO
+Before you install YOLO, create a virtual environment for your libraries and packages to be downloaded into. This makes sure that your packages are compatible and do not run into any unwated incompatibility issues with other packages in other locations. 
+
+```
+python3 -m venv yolo-env
+source yolo-env/bin/activate
+```
 
 In order to install YOLO from ultralytics, you need numpy versions less than numpy 2.
 Run this command:
