@@ -1,5 +1,4 @@
-import sys
-sys.path.insert(0, "build/lib.linux-armv7l-2.7")
+
 import time
 import board
 import busio
@@ -18,7 +17,7 @@ class VL53L1X:
         distance = self.sensor.get_distance()
         return (f"Distance: {distance} mm")
 
-tof = VL53L1X.VL53L1X()
+tof = adafruit_vl53l1x.VL53L1X(i2c_address=0x29)
 read_distance = tof.read_distance()
 print(read_distance)
 tof.stop_ranging()
