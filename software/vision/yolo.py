@@ -5,9 +5,9 @@ import cv2
 model = YOLO('yolov8n.pt')
 
 #running inference on a video or source
-results = model.track(source=0, show=True, tracker='bytetrack.yaml') #source can be a video (0 is the default camera), image, or webcam feed, show is to display the results, and tracker is the tracking algorithm to use
+results = model.track(source=1, show=True, tracker='bytetrack.yaml') #source can be a video (0 is the default camera), image, or webcam feed, show is to display the results, and tracker is the tracking algorithm to use
 
-cap = cv2.VideoCapture(0)
+cap = cv2.VideoCapture(1)
 
 while True:
     ret, frame = cap.read()
@@ -22,10 +22,3 @@ while True:
 
 cap.release()
 cv2.destroyAllWindows()
-
-#logic structure:
-'''
-1. match each camera frame with sensor frame 
-
-
-'''
