@@ -17,3 +17,14 @@ class VL53L1X:
         print("Initializing VL53L1X sensor...")
         distance = self.sensor.get_distance()
         return (f"Distance: {distance} mm")
+    
+
+    vl53l1x = VL53L1X()
+    while True:
+        try:
+            distance = vl53l1x.read_distance()
+            print(distance)
+            time.sleep(1)
+        except KeyboardInterrupt:
+            print("Exiting...")
+            break
