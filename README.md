@@ -68,6 +68,8 @@ pip3 install ultralytics
 You should be able to run the basics.py code now on your desktop!!
 
 
+
+
 Running YOLO on Raspberry Pi
 -------------
 
