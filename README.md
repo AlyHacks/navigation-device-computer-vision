@@ -78,7 +78,13 @@ In order to run this on your Raspi camera, you need to first connect your Raspbe
 
 (image goes here)
 
-### 5. Installing YOLO
+To test if your camera is working properly run the following command in your terminal:
+```
+rpicam-hello
+```
+A window with your camera feed should pop up.
+
+### 2. Installing YOLO
 The installation of YOLO is similar except, we have some preliminary steps. To update all available packages, run the following commands:
 
 ```
@@ -102,3 +108,7 @@ Lastly, install ultralytics for YOLO:
 ```
 pip install ultralytics 
 ```
+
+### 3. Running the code
+Now, you're ready to run the YOLO code on your Raspi camera!
+Run the code picam.py!
