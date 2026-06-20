@@ -65,5 +65,38 @@ Then, run this command:
 ```
 pip3 install ultralytics
 ```
+You should be able to run the basics.py code now on your desktop!!
 
 
+Running YOLO on Raspberry Pi
+-------------
+
+### 1. Setting up your Raspberry Pi camera
+In order to run this on your Raspi camera, you need to first connect your Raspberry Pi with your ribbon cable Raspi camera. This instruction uses the Raspberry Pi model 5, which is the recommended version if running YOLO on the Raspberry Pi.
+
+(image goes here)
+
+### 5. Installing YOLO
+The installation of YOLO is similar except, we have some preliminary steps. To update all available packages, run the following commands:
+
+```
+sudo apt update
+sudo apt upgrade -y
+sudo apt install python3-pip python3-venv -y 
+```
+
+Then, create your virtual environment. If you already created one, activate it.
+```
+python3 -m venv yolovenv 
+source yolovenv/bin/activate 
+```
+
+Then, uninstall Numpy to versions less than 2 (ultralytics and numpy packages have package dependency issues, so it's best to stick to Numpy<2)
+```
+pip install “numpy<2”
+```
+
+Lastly, install ultralytics for YOLO:
+```
+pip install ultralytics 
+```
