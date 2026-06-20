@@ -65,7 +65,7 @@ Then, run this command:
 ```
 pip3 install ultralytics
 ```
-You should be able to run the basics.py code now on your desktop!!
+You should be able to run the basics.py code now on your desktop!! (the file is in software --> YOLOCode --> basics.py)
 
 
 
@@ -111,4 +111,4 @@ pip install ultralytics
 
 ### 3. Running the code
 Now, you're ready to run the YOLO code on your Raspi camera!
-Run the code picam.py!
+Run the code picam.py! (the file is in software --> YOLOCode --> picam.py)
