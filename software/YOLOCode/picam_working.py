@@ -2,9 +2,11 @@ from ultralytics import YOLO
 import cv2
 from picamera2 import Picamera2
 
-picam2 = Picamera2()
+#need to use picamera2 instead of cv2.VideoCapture(0) since raspi only supports picamera2 for libcamera camera access
+picam2 = Picamera2() 
 picam2.start()
 
+#still using yolo code
 model = YOLO('yolov8n.pt')
 
 while True:
