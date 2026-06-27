@@ -65,7 +65,7 @@ while True:
         tof_buffer.append((timestamp_s, distance))
         sensor.clear_interrupt()
         
-        last_three_c = list(camera_buffer)[:3] #takes the latest 3 camera frames
+        last_three_c = list(camera_buffer)[-3:] #takes the latest 3 camera frames
         last_s = tof_buffer[-1] #takes the last sensor frame
         
         for timestamp, distance, results in last_three_c: #iterates througuh the 3 camera frames
