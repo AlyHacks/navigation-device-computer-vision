@@ -37,7 +37,7 @@ while True:
                 cls = int(box.cls[0])
                 x1, y1, x2, y2 = box.xyxy[0]
 
-                if cls == 0:
+                if cls == 2:  # Assuming class 2 is the car class
                     width = x2 - x1
                     height = y2 - y1
                     area = width * height
