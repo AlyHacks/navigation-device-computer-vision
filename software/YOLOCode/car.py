@@ -1,8 +1,11 @@
 from time import time
-
 from ultralytics import YOLO
 import cv2
 from picamera2 import Picamera2
+from gpiozero import LED
+
+led = LED(4) #GPIO pin 4
+
 
 #need to use picamera2 instead of cv2.VideoCapture(0) since raspi only supports picamera2 for libcamera camera access
 picam2 = Picamera2() 
@@ -26,6 +29,24 @@ while True:
         results = model.predict(frame)
         image = results[0].plot()
         cv2.imshow('YOLOv8 Detection', image)
+
+        
+
+        for result in results:
+            for box in result.boxes:
+                cls = int(box.cls[0])
+                x1, y1, x2, y2 = box.xyxy[0]
+
+                if cls == 0:
+                    width = x2 - x1
+                    height = y2 - y1
+                    area = width * height
+                    if area > 1000:  # Adjust this threshold as needed
+                        led.on()  # Turn on the LED
+                    elif 500 < area <= 10000:  # Adjust this threshold as needed
+                        led.blink(on_time=0.5, off_time=0.5)  # Blink the LED
+                else:
+                    led.off()  # Turn off the LED
 
         if cv2.waitKey(1) == ord('q'):
             break
