@@ -112,3 +112,5 @@ pip install ultralytics
 ### 3. Running the code
 Now, you're ready to run the YOLO code on your Raspi camera!
 Run the code picam.py! (the file is in software --> YOLOCode --> picam.py)
+
+You can also view this documentation guide for Raspberry Pis and YOLO for more info: https://docs.ultralytics.com/guides/raspberry-pi#test-the-camera
