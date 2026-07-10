@@ -10,7 +10,8 @@ from collections import deque
 from gpiozero import LED
 
 
-led = LED(4)
+ledr = LED(4)
+ledl = LED(5)
 
 camera_buffer = []
 tof_buffer = []
@@ -75,36 +76,43 @@ while True:
                 x1, y1, x2, y2= box.xyxy[0]
                 cx = abs(x1 - x2) / 2
                 fused["object"] = class_name  #gets object
-        
-                if cx in range (0, 213):
-                    print("on left")
-                elif cx in range (213, 426):
-                    print("in center")
-                elif cx in range (426, 640):
-                    print("on right")
                 
         
-        difference = abs(timestamp_c-last_time_s) #finds the closest camrea frame timestamp to the closest sensor reading
-        compare.append(difference) #stores it in a compare list to compare the three differences
-        
-        correct_index = compare.index(min(compare)) #finds the index of the minimum 0->-3, 1->-2, 2->-1
+                difference = abs(timestamp_c-last_time_s) #finds the closest camrea frame timestamp to the closest sensor reading
+                compare.append(difference) #stores it in a compare list to compare the three differences
+                
+                correct_index = compare.index(min(compare)) #finds the index of the minimum 0->-3, 1->-2, 2->-1
+                
+                fused["timestamp"] = last_three_c[correct_index-1][0] #gets the correct timestamp of camera frame,        
+                fused["distance"] = last_s[1] #takes the distance from the last_s tuple
+                distance = fused["distance"]    
 
-        
-        fused["timestamp"] = last_three_c[correct_index-1][0] #gets the correct timestamp of camera frame,        
-        fused["distance"] = last_s[1] #takes the distance from the last_s tuple
-            
+                        
+                if (cx>0 and cx<320) and distance < 1000:
+                    x = cx/640 #the position of object is a fraction from 0 to 1, 0 is left
+                    ledr.on()
+                    time.sleep(0.25) #turns on the led for a time based on distance
+                    ledl.on()
+                    time.sleep(0.25) #turns on the led for a time based on distance
+                    ledr.off()
+                    time.sleep(distance/(100*x)) #led off based on position and distnace
+                    ledl.off()
+                    time.sleep((distance*x)/100)
+                elif cx>=320 and cx<640 and distance < 1000:
+                    x = cx/640 #the position of object is a fraction from 0 to 1, 0 is left
+                    ledr.on()
+                    time.sleep(0.25) #turns on the led for a time based on distance
+                    ledl.on()
+                    time.sleep(0.25) #turns on the led for a time based on distance
+                    ledr.off()
+                    time.sleep((distance*(1-x))/100) #led off based on position and distnace
+                    ledl.off()
+                    time.sleep(distance/100*(1-x))
+                else:
+                    ledr.off()
+                    ledl.off()
 
-    
-    if fused["distance"] < 1000:
-        led.on()
-        time.sleep(0.25) #turns on the led for a time based on distance
-        led.off()
-        time.sleep(fused["distance"]/100) #turns off the led for a time based on distance
-    else:
-        led.off()
 
-        
-        
         
     if cv2.waitKey(1) == ord('q'):
         print("error")
