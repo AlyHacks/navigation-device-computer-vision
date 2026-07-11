@@ -30,7 +30,7 @@ while True:
                 yolo_timestamps[name] = [] #WHAT DOES EMPTY LIST DO 
             yolo_timestamps[name].append((timestamp, (x1, y1, x2, y2)))
 for obj, times in yolo_timestamps.items():
-    print(f"Object: {obj}, Timestamps: {times}")
+    print(f"Object:+ {obj}, Timestamps: {times}")
 
     if cv2.waitKey(1) == ord('q'):
         break
