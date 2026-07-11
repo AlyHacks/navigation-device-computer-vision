@@ -48,7 +48,6 @@ time.sleep(2)
 camera_buffer = deque(maxlen=20) #removes frames when the buffer gets too large
 tof_buffer = deque(maxlen=20)
 compare = deque(maxlen=3)
-areas = deque(maxlen=5) #deque when it doesn't exist anymore
 
 while True:
     areas = [] #create list to store areas of contours for each object per frame
@@ -79,17 +78,22 @@ while True:
                 class_name = model.names[class_id]
                 x1, y1, x2, y2= box.xyxy[0]
 
-                contour = np.array(box, dtype=np.int32) #
-                area = cv2.contourArea(contour)
+                x1 = x1.item()
+                x2 = x2.item()
+                y1 = y1.item()
+                y2 = y2.item()
+
+                area = (x2-x1)*(y2-y1)
+
                 areas.append(area)
                 maximum_area = max(areas)
-                maximum_area_index = areas.index(maximum_area)
-                x1, y1, x2, y2 = result.boxes[maximum_area_index].xyxy[0] #VERIFY IF TRUE/RIGHT
-                x1 = x1.item()
-                y1 = y1.item()
-                x2 = x2.item()
-                y2 = y2.item()
-                cx = abs(x1-x2)/2 #needs to be of the max area contour, so need to find the index of the max area and use that to get the correct cx and cy
+                maximum_area_index = areas.index(maximum_area) #find index of the maximum contour area at the frame
+                x_1, y_1, x_2, y_2 = result.boxes[maximum_area_index].xyxy[0] #VERIFY IF TRUE/RIGHT
+                x_1 = x_1.item()
+                y_1 = y_1.item()
+                x_2 = x_2.item()
+                y_2 = y_2.item()
+                cx = (x_2-x_1)/2 #needs to be of the max area contour, so need to find the index of the max area and use that to get the correct cx and cy
 
             
 
