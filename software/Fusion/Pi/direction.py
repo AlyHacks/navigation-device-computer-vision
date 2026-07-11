@@ -8,6 +8,7 @@ import adafruit_vl53l1x
 import time
 from collections import deque
 from gpiozero import LED
+import numpy as np
 
 
 ledr = LED(4)
@@ -47,8 +48,10 @@ time.sleep(2)
 camera_buffer = deque(maxlen=20) #removes frames when the buffer gets too large
 tof_buffer = deque(maxlen=20)
 compare = deque(maxlen=3)
+areas = deque(maxlen=5) #deque when it doesn't exist anymore
 
 while True:
+    areas = [] #create list to store areas of contours for each object per frame
     frame = picam2.capture_array()
     timestamp_c = time.monotonic_ns() #does not jump even if system clock changes
     results = model.track(frame)
@@ -68,13 +71,28 @@ while True:
     last_time_s = last_s[0]
 
 
+
     for timestamp_c, distance, results in last_three_c:#iterates througuh the 3 camera frames
         for result in results:
             for box in result.boxes:
                 class_id = int(box.cls[0])
                 class_name = model.names[class_id]
                 x1, y1, x2, y2= box.xyxy[0]
-                cx = abs(x1 - x2) / 2
+
+                contour = np.array(box, dtype=np.int32) #
+                area = cv2.contourArea(contour)
+                areas.append(area)
+                maximum_area = max(areas)
+                maximum_area_index = areas.index(maximum_area)
+                x1, y1, x2, y2 = result.boxes[maximum_area_index].xyxy[0] #VERIFY IF TRUE/RIGHT
+                x1 = x1.item()
+                y1 = y1.item()
+                x2 = x2.item()
+                y2 = y2.item()
+                cx = abs(x1-x2)/2 #needs to be of the max area contour, so need to find the index of the max area and use that to get the correct cx and cy
+
+            
+
                 fused["object"] = class_name  #gets object
                 
         
