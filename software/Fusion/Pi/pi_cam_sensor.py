@@ -89,14 +89,11 @@ while True:
             
             print(fused)
             
-        if fused["distance"] <= 100:
+        if fused["distance"] < 1000:
             led.on()
-            time.sleep(1)
-        if 100 < fused["distance"] < 200:
-            led.on()
-            time.sleep(0.5)
+            time.sleep(0.25) #turns on the led for a time based on distance
             led.off()
-            time.sleep(0.5)
+            time.sleep(fused["distance"]/100) #turns off the led for a time based on distance
         else:
             led.off()
                 
