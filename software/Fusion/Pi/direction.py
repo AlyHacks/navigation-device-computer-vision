@@ -19,6 +19,7 @@ tof_buffer = []
 fused = {"timestamp": 0, "distance": 0, "object": 0}
 compare = []
 correct_index = 0
+last_ten_box = []
 
 #for the sensor
 i2c = busio.I2C(board.SCL, board.SDA)
@@ -48,9 +49,12 @@ time.sleep(2)
 camera_buffer = deque(maxlen=20) #removes frames when the buffer gets too large
 tof_buffer = deque(maxlen=20)
 compare = deque(maxlen=3)
+last_ten_box = deque(maxlen=10) #stores the last 10 boxes of the largest contour, to find the average position of the object
 
 while True:
     areas = [] #create list to store areas of contours for each object per frame
+    areas = deque(maxlen=10) #stores the last 10 areas of the largest contour, to find the average position of the object
+    
     frame = picam2.capture_array()
     timestamp_c = time.monotonic_ns() #does not jump even if system clock changes
     results = model.track(frame)
@@ -85,21 +89,23 @@ while True:
 
                 area = (x2-x1)*(y2-y1)
 
+                last_ten_box.append((x1, y1, x2, y2)) #stores the last 10 boxes of the largest contour, to find the average position of the object
+
                 areas.append(area)
                 maximum_area = max(areas)
                 maximum_area_index = areas.index(maximum_area) #find index of the maximum contour area at the frame
-                x_1, y_1, x_2, y_2 = result.boxes[maximum_area_index].xyxy[0] #VERIFY IF TRUE/RIGHT
-                x_1 = x_1.item()
-                y_1 = y_1.item()
-                x_2 = x_2.item()
-                y_2 = y_2.item()
+                
+                x_1 = last_ten_box[maximum_area_index][0].item()
+                y_1 = last_ten_box[maximum_area_index][1].item()
+                x_2 = last_ten_box[maximum_area_index][2].item()
+                y_2 = last_ten_box[maximum_area_index][3].item()
+
                 cx = (x_2-x_1)/2 #needs to be of the max area contour, so need to find the index of the max area and use that to get the correct cx and cy
 
             
 
                 fused["object"] = class_name  #gets object
                 
-        
                 difference = abs(timestamp_c-last_time_s) #finds the closest camrea frame timestamp to the closest sensor reading
                 compare.append(difference) #stores it in a compare list to compare the three differences
                 
