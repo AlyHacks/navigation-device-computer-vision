@@ -46,14 +46,14 @@ def buzzing(cx, distance, ledr, ledl):
     buzz1 = time.time()
     x = cx/640   #the position of object is a fraction from 0 to 1, 0 is left#turns on the led for a time based on distance
     if (cx>0 and cx<213) and distance < 1000:
+        ledl.off()
         ledr.blink(on_time=0.25, off_time=(distance*x)/100)
     elif (cx>=213 and cx<426) and distance < 1000:
         ledr.blink(on_time=0.25, off_time=(distance*x)/100)
         ledl.blink(on_time=0.25, off_time=(distance*(1-x))/100)
     elif (cx>=426 and cx<640) and distance < 1000:
+        ledr.off()
         ledl.blink(on_time=0.25, off_time=(distance/100*x))
-    elif (cx>=426 and cx<640) and distance < 1000:
-        ledl.blink(on_time=0.25, off_time=(distance*(1-x))/100)
     else:
         ledr.off()
         ledl.off()
