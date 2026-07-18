@@ -25,8 +25,9 @@ i2c = busio.I2C(board.SCL, board.SDA)
 sensor = adafruit_vl53l1x.VL53L1X(i2c)
 sensor.timing_budget = 50
 
-def starting():
-    sensor.start_ranging()
+sensor.start_ranging()
+
+def distance():
     distance = sensor.distance
     return distance
         
@@ -53,13 +54,13 @@ while True:
     areas = [] #create list to store areas of contours for each object per frame
     frame = picam2.capture_array()
     timestamp_c = time.monotonic_ns() #does not jump even if system clock changes
-    results = model.track(frame)
+    results = model.predict(frame) #faster than .track
     camera_buffer.append((timestamp_c, frame, results))
     image = results[0].plot()
     cv2.imshow('YOLOv8 Detection', image)
     
 
-    distance = starting()
+    distance = distance()
     timestamp_s = time.monotonic_ns()
     
     tof_buffer.append((timestamp_s, distance))
