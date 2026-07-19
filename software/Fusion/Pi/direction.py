@@ -11,8 +11,8 @@ import numpy as np
 
 setup1 = time.time()
 
-ledr = LED(5)
-ledl = LED(4)
+ledl = LED(5)
+ledr = LED(4)
 
 camera_buffer = []
 tof_buffer = []
@@ -46,14 +46,14 @@ def buzzing(cx, distance, ledr, ledl):
     buzz1 = time.time()
     x = cx/640   #the position of object is a fraction from 0 to 1, 0 is left#turns on the led for a time based on distance
     if (cx>0 and cx<213) and distance < 1000:
-        ledl.off()
-        ledr.blink(on_time=0.25, off_time=(distance*x)/100)
+        ledr.off()
+        ledl.blink(on_time=0.25, off_time=(distance*x)/100)
     elif (cx>=213 and cx<426) and distance < 1000:
         ledr.blink(on_time=0.25, off_time=(distance*x)/100)
         ledl.blink(on_time=0.25, off_time=(distance*(1-x))/100)
     elif (cx>=426 and cx<640) and distance < 1000:
-        ledr.off()
-        ledl.blink(on_time=0.25, off_time=(distance/100*x))
+        ledl.off()
+        ledr.blink(on_time=0.25, off_time=(distance/100*x))
     else:
         ledr.off()
         ledl.off()
@@ -119,16 +119,23 @@ def main(ledr, ledl, sensor, picam2, model, camera_buffer, tof_buffer, compare, 
         last_three_c = list(camera_buffer)[-3:] #takes the latest 3 camera frames
         last_s = tof_buffer[-1] #takes the last sensor frame
         last_time_s = last_s[0]
-            
+        difference = abs(timestamp_c-last_time_s) #finds the closest camrea frame timestamp to the closest sensor reading
+        compare.append(difference) #stores it in a compare list to compare the three differences
+        
+        correct_index = compare.index(min(compare)) #finds the index of the minimum 0->-3, 1->-2, 2->-1
+        
+        fused["timestamp"] = last_three_c[correct_index-1][0] #gets the correct timestamp of camera frame,        
+        fused["distance"] = last_s[1] #takes the distance from the last_s tuple
+        distance = fused["distance"]
+
         timestamp2 = time.time()
         timestamp = timestamp2-timestamp1
         print(f"TIME FOR TIMESTAMP: {timestamp}")
         
         loop1 = time.time()
         pos1 = time.time()
-        for timestamp_c, distance, results in last_three_c:#iterates througuh the 3 camera frames
-            for result in results:
-                for box in result.boxes:
+        for timestamp_c, distance, results in last_three_c[correct_index-1]:#iterates througuh the correct camera frame
+                for box in results.boxes:
                     class_id = int(box.cls[0])
                     class_name = model.names[class_id]
                     fused["object"] = class_name  #gets object
@@ -144,15 +151,6 @@ def main(ledr, ledl, sensor, picam2, model, camera_buffer, tof_buffer, compare, 
                     pos2 = time.time()
                     pos = pos2-pos1
                     print(f"POSITION TIME IS: {pos}")            
-                    difference = abs(timestamp_c-last_time_s) #finds the closest camrea frame timestamp to the closest sensor reading
-                    compare.append(difference) #stores it in a compare list to compare the three differences
-                    
-                    correct_index = compare.index(min(compare)) #finds the index of the minimum 0->-3, 1->-2, 2->-1
-                    
-                    fused["timestamp"] = last_three_c[correct_index-1][0] #gets the correct timestamp of camera frame,        
-                    fused["distance"] = last_s[1] #takes the distance from the last_s tuple
-                    distance = fused["distance"]
-                    
                     buzzing(cx, distance, ledr, ledl)
                     
             
