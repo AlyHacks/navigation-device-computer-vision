@@ -72,4 +72,3 @@ flowchart TB
     style n23 fill:#BBDEFB
     ```
 
-    #todo add a new actuator description 
