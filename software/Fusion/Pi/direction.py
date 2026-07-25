@@ -82,6 +82,28 @@ def max_area(x1, x2, y1, y2, areas, last_ten_box):
     cx = x_1+(x_2-x_1)/2  
     return cx, x_1, y_1, x_2, y_2
 
+def position(timestamp_c, distance, results, last_three_c, correct_index, ledr, ledl, areas, last_ten_box):
+    pos1 = time.time()
+    for timestamp_c, distance, results in last_three_c[correct_index-1]:#iterates througuh the correct camera frame
+            for box in results.boxes:
+                class_id = int(box.cls[0])
+                class_name = model.names[class_id]
+                fused["object"] = class_name  #gets object
+                x1, y1, x2, y2= box.xyxy[0]
+                
+                x1 = x1.item()
+                x2 = x2.item()
+                y1 = y1.item()
+                y2 = y2.item()
+                
+                cx, x_1, x_2, y_1, y_2 = max_area(x1, x2, y1, y2, areas, last_ten_box)             
+                
+                pos2 = time.time()
+                pos = pos2-pos1
+                print(f"POSITION TIME IS: {pos}")            
+                buzzing(cx, distance, ledr, ledl)
+
+
 
 picam2.start()
 time.sleep(2)
@@ -134,25 +156,7 @@ def main(ledr, ledl, sensor, picam2, model, camera_buffer, tof_buffer, compare, 
         
         loop1 = time.time()
         pos1 = time.time()
-        for timestamp_c, distance, results in last_three_c[correct_index-1]:#iterates througuh the correct camera frame
-                for box in results.boxes:
-                    class_id = int(box.cls[0])
-                    class_name = model.names[class_id]
-                    fused["object"] = class_name  #gets object
-                    x1, y1, x2, y2= box.xyxy[0]
-                    
-                    x1 = x1.item()
-                    x2 = x2.item()
-                    y1 = y1.item()
-                    y2 = y2.item()
-                    
-                    cx, x_1, x_2, y_1, y_2 = max_area(x1, x2, y1, y2, areas, last_ten_box)             
-                    
-                    pos2 = time.time()
-                    pos = pos2-pos1
-                    print(f"POSITION TIME IS: {pos}")            
-                    buzzing(cx, distance, ledr, ledl)
-                    
+        position(ledr, ledl, sensor, picam2, model, camera_buffer, tof_buffer, compare, last_ten_box, fused)
             
         
         loop2 = time.time()
