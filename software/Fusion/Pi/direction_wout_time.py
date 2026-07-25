@@ -117,9 +117,10 @@ def main(ledr, ledl, sensor, picam2, model, camera_buffer, tof_buffer, compare, 
         timestamp_c = time.monotonic_ns() #does not jump even if system clock changes
         results = model.predict(frame) #change back to track if needed
         camera_buffer.append((timestamp_c, frame, results))
-        
-        image = results[0].plot()
-        cv2.imshow('YOLOv8 Detection', image)
+
+        #unplot to make processing faster
+        #image = results[0].plot()
+        #cv2.imshow('YOLOv8 Detection', image)
         
         distance = dist(sensor)
         timestamp_s = time.monotonic_ns()
