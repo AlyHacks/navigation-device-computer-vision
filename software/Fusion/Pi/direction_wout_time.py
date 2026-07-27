@@ -86,15 +86,18 @@ def max_area(x1, x2, y1, y2, areas, last_ten_box):
     return cx, x_1, y_1, x_2, y_2
 
 def frame_calc(timestamp_c,last_s, compare, last_time_s, last_three_c, fused):
-        difference = abs(timestamp_c-last_time_s) #finds the closest camrea frame timestamp to the closest sensor reading
-        compare.append(difference) #stores it in a compare list to compare the three differences
-        
-        correct_index = compare.index(min(compare)) #finds the index of the minimum 0->-3, 1->-2, 2->-1
-        
-        fused["timestamp"] = last_three_c[correct_index-1][0] #gets the correct timestamp of camera frame,        
-        fused["distance"] = last_s[1] #takes the distance from the last_s tuple
-        distance = fused["distance"]
-        return distance, correct_index, fused
+        for frame in last_three_c:
+            frame_timestamp_c = frame[0]
+            
+            difference = abs(frame_timestamp_c-last_time_s) #finds the closest camrea frame timestamp to the closest sensor reading
+            compare.append(difference) #stores it in a compare list to compare the three differences
+            
+            correct_index = compare.index(min(compare)) #finds the index of the minimum 0->-3, 1->-2, 2->-1
+            
+            fused["timestamp"] = last_three_c[correct_index-1][0] #gets the correct timestamp of camera frame,        
+            fused["distance"] = last_s[1] #takes the distance from the last_s tuple
+            distance = fused["distance"]
+            return distance, correct_index, fused
 
 
 picam2.start()
