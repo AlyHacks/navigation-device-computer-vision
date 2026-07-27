@@ -137,7 +137,7 @@ def main(ledr, ledl, sensor, picam2, model, camera_buffer, tof_buffer, compare, 
 
         distance, correct_index, fused = frame_calc(timestamp_c,last_s, compare, last_time_s, last_three_c, fused)
 
-        for timestamp_c, distance, results in last_three_c[correct_index-1]:#iterates througuh the correct camera frame
+        for timestamp_c, frame, results in last_three_c[correct_index-1]:#iterates througuh the correct camera frame
                 for box in results.boxes:
                     class_id = int(box.cls[0])
                     class_name = model.names[class_id]
