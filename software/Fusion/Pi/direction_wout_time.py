@@ -22,7 +22,7 @@ tof_buffer = []
 fused = {"timestamp": 0, "distance": 0, "object": 0}
 compare = []
 correct_index = 0
-last_ten_box = []
+frame_boundbox = []
 
 #for the sensor
 i2c = busio.I2C(board.SCL, board.SDA)
@@ -63,10 +63,10 @@ def buzzing(cx, distance, ledr, ledl):
         ledr.off()
         ledl.off()
 
-def max_area(x1, x2, y1, y2, areas, last_ten_box):
+def max_area(x1, x2, y1, y2, areas, frame_boundbox):
 
     
-    last_ten_box.append((x1,y1,x2,y2))
+    frame_boundbox.append((x1,y1,x2,y2))
                     
     area = (x2-x1)*(y2-y1)
     
@@ -77,10 +77,10 @@ def max_area(x1, x2, y1, y2, areas, last_ten_box):
     
     max_area_index = areas.index(max_area)
 
-    x_1 = last_ten_box[max_area_index][0]
-    y_1 = last_ten_box[max_area_index][1]
-    x_2 = last_ten_box[max_area_index][2]
-    y_2 = last_ten_box[max_area_index][3]
+    x_1 = frame_boundbox[max_area_index][0]
+    y_1 = frame_boundbox[max_area_index][1]
+    x_2 = frame_boundbox[max_area_index][2]
+    y_2 = frame_boundbox[max_area_index][3]
     
     cx = x_1+(x_2-x_1)/2  
     return cx, x_1, y_1, x_2, y_2
@@ -94,10 +94,12 @@ def frame_calc(timestamp_c,last_s, compare, last_time_s, last_three_c, fused):
             
             correct_index = compare.index(min(compare)) #finds the index of the minimum 0->-3, 1->-2, 2->-1
             
-            fused["timestamp"] = last_three_c[correct_index-1][0] #gets the correct timestamp of camera frame,        
+            fused["timestamp"] = last_three_c[correct_index][0] #gets the correct timestamp of camera frame,        
             fused["distance"] = last_s[1] #takes the distance from the last_s tuple
             distance = fused["distance"]
-            return distance, correct_index, fused
+
+            compare.clear() #clears the compare list for the next iteration
+        return distance, correct_index, fused
 
 
 picam2.start()
@@ -106,16 +108,18 @@ time.sleep(2)
 camera_buffer = deque(maxlen=20) #removes frames when the buffer gets too large
 tof_buffer = deque(maxlen=20)
 compare = deque(maxlen=3)
-last_ten_box = deque(maxlen=10)
 
 
-def main(ledr, ledl, sensor, picam2, model, camera_buffer, tof_buffer, compare, last_ten_box, fused):
+def main(ledr, ledl, sensor, picam2, model, camera_buffer, tof_buffer, compare, frame_boundbox, fused):
     while True:
         
         distance = 0
         timestamp1 = time.time()
+
         areas = []
         areas = deque(maxlen=10)
+        frame_boundbox = []
+
         frame = picam2.capture_array()
         timestamp_c = time.monotonic_ns() #does not jump even if system clock changes
         results = model.predict(frame) #change back to track if needed
@@ -137,7 +141,7 @@ def main(ledr, ledl, sensor, picam2, model, camera_buffer, tof_buffer, compare, 
 
         distance, correct_index, fused = frame_calc(timestamp_c,last_s, compare, last_time_s, last_three_c, fused)
 
-        for timestamp_c, frame, results in last_three_c[correct_index-1]:#iterates througuh the correct camera frame
+        for timestamp_c, frame, results in last_three_c[correct_index]:#iterates througuh the correct camera frame
                 for box in results.boxes:
                     class_id = int(box.cls[0])
                     class_name = model.names[class_id]
@@ -149,7 +153,7 @@ def main(ledr, ledl, sensor, picam2, model, camera_buffer, tof_buffer, compare, 
                     y1 = y1.item()
                     y2 = y2.item()
                     
-                    cx, x_1, x_2, y_1, y_2 = max_area(x1, x2, y1, y2, areas, last_ten_box)                       
+                    cx, x_1, x_2, y_1, y_2 = max_area(x1, x2, y1, y2, areas, frame_boundbox)                       
                     buzzing(cx, distance, ledr, ledl)
 
         
@@ -160,7 +164,7 @@ def main(ledr, ledl, sensor, picam2, model, camera_buffer, tof_buffer, compare, 
         time.sleep(0.05)
 
 
-main(ledr, ledl, sensor, picam2, model, camera_buffer, tof_buffer, compare, last_ten_box, fused)
+main(ledr, ledl, sensor, picam2, model, camera_buffer, tof_buffer, compare, frame_boundbox, fused)
 picam2.stop()
 cv2.destroyAllWindows()
 
