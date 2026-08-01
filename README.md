@@ -99,7 +99,7 @@ python3 -m venv yolovenv
 source yolovenv/bin/activate 
 ```
 
-Then, uninstall Numpy to versions less than 2 (ultralytics and numpy packages have package dependency issues, so it's best to stick to Numpy<2)
+Then, uninstall NumPy to versions less than 2 (ultralytics and NumPy packages have package dependency issues, so it's best to stick to NumPy<2)
 ```
 pip install “numpy<2”
 ```
