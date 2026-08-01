@@ -44,7 +44,7 @@ while True:
                     if area > 1000:  # Adjust this threshold as needed
                         led.on()  # Turn on the LED
                     elif 500 < area <= 10000:  # Adjust this threshold as needed
-                        led.blink(on_time=0.5, off_time=area/1000)  # Blink the LED
+                        led.blink(on_time=0.5, off_time=500/area)  # Blink the LED
                 else:
                     led.off()  # Turn off the LED
 
