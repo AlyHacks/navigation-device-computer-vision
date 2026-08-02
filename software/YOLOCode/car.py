@@ -42,8 +42,8 @@ while True:
                     height = y2 - y1
                     area = width * height
                     if area > 1000:  # Adjust this threshold as needed
-                        led.on()  # Turn on the LED
-                    elif 500 < area <= 10000:  # Adjust this threshold as needed
+                        led.blink(on_time=0.5, off_time=0.5)  # Turn on the LED
+                    elif 500 < area <= 1000:  # Adjust this threshold as needed
                         led.blink(on_time=0.5, off_time=500/area)  # Blink the LED
                 else:
                     led.off()  # Turn off the LED
