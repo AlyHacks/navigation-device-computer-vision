@@ -168,3 +168,4 @@ main(ledr, ledl, sensor, picam2, model, camera_buffer, tof_buffer, compare, fram
 picam2.stop()
 cv2.destroyAllWindows()
 
+# todo: try to optimize the frame calculation process
