@@ -81,11 +81,8 @@ def buzzing(cx, distance, ledr, ledl):
 
 def max_area(x1, x2, y1, y2, areas, frame_boundbox):
 
-    
     frame_boundbox.append((x1,y1,x2,y2))
-                    
     area = (x2-x1)*(y2-y1)
-    
     areas.append(area)
     max_area = max(areas)
     
