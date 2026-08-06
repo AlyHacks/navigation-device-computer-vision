@@ -50,26 +50,33 @@ def dist(sensor):
 def buzzing(cx, distance, ledr, ledl):
     buzz1 = time.time()
     x = cx/640   #the position of object is a fraction from 0 to 1, 0 is left#turns on the led for a time based on distance
-    if (cx>0 and cx<213) and distance < 1000:
+    # if there is both distance and object
+    if (cx>0 and cx<340) and distance < 1000:
         ledr.off()
         ledl.blink(on_time=0.25, off_time=(distance*x)/100)
-    elif (cx>=213 and cx<426) and distance < 1000:
-        ledr.blink(on_time=0.25, off_time=(distance*x)/100)
-        ledl.blink(on_time=0.25, off_time=(distance*(1-x))/100)
-    elif (cx>=426 and cx<640) and distance < 1000:
+    elif (cx>=340 and cx<640) and distance < 1000:
         ledl.off()
         ledr.blink(on_time=0.25, off_time=(distance/100*x))
+    # if there is only distance and no object
+    elif distance < 1000 and cx is None:
+        ledr.blink(on_time=0.25, off_time=(distance/100))
+        ledl.blink(on_time=0.25, off_time=(distance/100))
+    # if there is no distance and only object
+    elif (cx>0 and cx<340) and distance is None:
+        ledr.off()
+        ledl.blink(on_time=0.5, off_time=0.5)
+    elif (cx>=340 and cx<640) and distance is None:
+        ledl.off()
+        ledr.blink(on_time=0.5, off_time=0.5)
+    # if there is no distance and no object
     else:
         ledr.off()
         ledl.off()
 
 def max_area(x1, x2, y1, y2, areas, frame_boundbox):
 
-    
     frame_boundbox.append((x1,y1,x2,y2))
-                    
     area = (x2-x1)*(y2-y1)
-    
     areas.append(area)
     max_area = max(areas)
     
@@ -168,3 +175,4 @@ main(ledr, ledl, sensor, picam2, model, camera_buffer, tof_buffer, compare, fram
 picam2.stop()
 cv2.destroyAllWindows()
 
+# todo: try to optimize the frame calculation process
