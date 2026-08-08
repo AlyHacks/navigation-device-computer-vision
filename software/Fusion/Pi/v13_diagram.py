@@ -51,9 +51,30 @@ def cam_reading(picam2):
     timestamp_c = time.monotonic_ns() #timestamp for the camera frame
     return frame, timestamp_c
 
+def frame_calc(timestamp_c, compare, distance_latest, last_three_c, fused):
+        for frame in last_three_c:
+            frame_timestamp_c = frame[0]
+            
+            difference = abs(frame_timestamp_c-distance_latest) #finds the closest camrea frame timestamp to the closest sensor reading
+            compare.append(difference) #stores it in a compare list to compare the three differences
+            
+            correct_index = compare.index(min(compare)) #finds the index of the minimum 0->-3, 1->-2, 2->-1
+            
+            fused["timestamp"] = last_three_c[correct_index][0] #gets the correct timestamp of camera frame,        
+            fused["distance"] = distance #takes the distance from the last_s tuple
+            distance_latest = fused["distance"]
+
+            compare.clear() #clears the compare list for the next iteration
+        return distance_latest, correct_index, fused
 
 while True:
-    distance, timestamp_s = sensor_reading(sensor)
+    distance_latest, timestamp_s = sensor_reading(sensor)
     frame, timestamp_c = cam_reading(picam2)
-    
+
+    #plotting results from cam frame to yolo model and displaying it on the screen
+    results = model.track(frame)
+    image = results[0].plot()
+    cv2.imshow('YOLOv8 Detection', image)
+
+
 
