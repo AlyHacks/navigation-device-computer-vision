@@ -104,7 +104,7 @@ def position(frame, timestamp_c, results, last_three_c, correct_index, ledr, led
                 pos2 = time.time()
                 pos = pos2-pos1
                 print(f"POSITION TIME IS: {pos}")
-                return x1, y1, x2, y2          
+    return x1, y1, x2, y2          
                 
 
 
