@@ -153,8 +153,8 @@ while True:
             ledl.on()
         else:
             #both buzzers output buzzzing frequency relative to distance
-            ledr.off()
-            ledl.off()
+            ledr.blink(ontime=0.1, off_time=distance_latest/1000)
+            ledl.blink(ontime=0.1, off_time=distance_latest/1000)
     else:
         ledr.off()
         ledl.off()
