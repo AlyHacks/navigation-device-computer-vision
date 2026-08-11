@@ -121,61 +121,60 @@ setup2 = time.time()
 setup = setup2-setup1
 print(f"SETUP TIME IS: {setup}")
 
-def main(ledr, ledl, sensor, picam2, model, camera_buffer, tof_buffer, compare, last_ten_box, fused):
-    while True:
-        
-        distance = 0
-        timestamp1 = time.time()
-        areas = []
-        areas = deque(maxlen=10)
-        frame = picam2.capture_array()
-        timestamp_c = time.monotonic_ns() #does not jump even if system clock changes
-        results = model.predict(frame) #change back to track if needed
-        camera_buffer.append((timestamp_c, frame, results))
-        
-        image = results[0].plot()
-        cv2.imshow('YOLOv8 Detection', image)
-        
-        distance = dist(sensor)
-        timestamp_s = time.monotonic_ns()
 
-        tof_buffer.append((timestamp_s, distance))
-        sensor.clear_interrupt()
-        
-        last_three_c = list(camera_buffer)[-3:] #takes the latest 3 camera frames
-        last_s = tof_buffer[-1] #takes the last sensor frame
-        last_time_s = last_s[0]
-        difference = abs(timestamp_c-last_time_s) #finds the closest camrea frame timestamp to the closest sensor reading
-        compare.append(difference) #stores it in a compare list to compare the three differences
-        
-        correct_index = compare.index(min(compare)) #finds the index of the minimum 0->-3, 1->-2, 2->-1
-        
-        fused["timestamp"] = last_three_c[correct_index-1][0] #gets the correct timestamp of camera frame,        
-        fused["distance"] = last_s[1] #takes the distance from the last_s tuple
-        distance = fused["distance"]
+while True:
+    
+    distance = 0
+    timestamp1 = time.time()
+    areas = []
+    areas = deque(maxlen=10)
+    frame = picam2.capture_array()
+    timestamp_c = time.monotonic_ns() #does not jump even if system clock changes
+    results = model.predict(frame) #change back to track if needed
+    camera_buffer.append((timestamp_c, frame, results))
+    
+    image = results[0].plot()
+    cv2.imshow('YOLOv8 Detection', image)
+    
+    distance = dist(sensor)
+    timestamp_s = time.monotonic_ns()
 
-        timestamp2 = time.time()
-        timestamp = timestamp2-timestamp1
-        print(f"TIME FOR TIMESTAMP: {timestamp}")
-        
-        loop1 = time.time()
-        pos1 = time.time()
-        
-        x1, y1, x2, y2 = position(frame, timestamp_c, results, last_three_c, correct_index, ledr, ledl, areas, last_ten_box, fused)
-        cx, x_1, x_2, y_1, y_2 = max_area(x1, x2, y1, y2, areas, last_ten_box)
-        buzzing(cx, distance, ledr, ledl)
+    tof_buffer.append((timestamp_s, distance))
+    sensor.clear_interrupt()
+    
+    last_three_c = list(camera_buffer)[-3:] #takes the latest 3 camera frames
+    last_s = tof_buffer[-1] #takes the last sensor frame
+    last_time_s = last_s[0]
+    difference = abs(timestamp_c-last_time_s) #finds the closest camrea frame timestamp to the closest sensor reading
+    compare.append(difference) #stores it in a compare list to compare the three differences
+    
+    correct_index = compare.index(min(compare)) #finds the index of the minimum 0->-3, 1->-2, 2->-1
+    
+    fused["timestamp"] = last_three_c[correct_index-1][0] #gets the correct timestamp of camera frame,        
+    fused["distance"] = last_s[1] #takes the distance from the last_s tuple
+    distance = fused["distance"]
 
-
-        loop2 = time.time()
-        entireloop = loop2-loop1
-        print(f"TOTAL LOOP TIME: {entireloop}")
-        
-        if cv2.waitKey(1) == ord('q'):
-            print("error")
-            break
-        time.sleep(0.05)
+    timestamp2 = time.time()
+    timestamp = timestamp2-timestamp1
+    print(f"TIME FOR TIMESTAMP: {timestamp}")
+    
+    loop1 = time.time()
+    pos1 = time.time()
+    
+    x1, y1, x2, y2 = position(frame, timestamp_c, results, last_three_c, correct_index, ledr, ledl, areas, last_ten_box, fused)
+    cx, x_1, x_2, y_1, y_2 = max_area(x1, x2, y1, y2, areas, last_ten_box)
+    buzzing(cx, distance, ledr, ledl)
 
 
-main(ledr, ledl, sensor, picam2, model, camera_buffer, tof_buffer, compare, last_ten_box, fused)
+    loop2 = time.time()
+    entireloop = loop2-loop1
+    print(f"TOTAL LOOP TIME: {entireloop}")
+    
+    if cv2.waitKey(1) == ord('q'):
+        print("error")
+        break
+    time.sleep(0.05)
+
+
 picam2.stop()
 cv2.destroyAllWindows()
