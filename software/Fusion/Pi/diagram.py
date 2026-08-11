@@ -22,6 +22,7 @@ compare = []
 compare = deque(maxlen=3)
 correct_index = 0
 frame_boundbox = []
+last_ten_box = []
 
 #sensor setup
 i2c = busio.I2C(board.SCL, board.SDA)
@@ -75,7 +76,53 @@ def object_detected(correct_frame):
         return True
     else:
         return False
-    
+
+def object_localization(correct_frame):
+    #position function
+    pos1 = time.time()
+    for results in camera_buffer_dict.values():#iterates througuh the correct camera frame
+        for result in results:
+            if len(result.boxes) > 0:
+                for box in result.boxes:
+                    class_id = int(box.cls[0])
+                    class_name = model.names[class_id]
+                    fused["object"] = class_name  #gets object
+                    x1, y1, x2, y2= box.xyxy[0]
+                    
+                    x1 = x1.item()
+                    x2 = x2.item()
+                    y1 = y1.item()
+                    y2 = y2.item()
+                    
+                    #max area function              
+                    last_ten_box.append((x1,y1,x2,y2))   
+                    area = (x2-x1)*(y2-y1)
+
+                    areas.append(area)
+                    max_area = max(areas)
+                    
+                    max_area_index = areas.index(max_area)
+
+                    x_1 = last_ten_box[max_area_index][0]
+                    y_1 = last_ten_box[max_area_index][1]
+                    x_2 = last_ten_box[max_area_index][2]
+                    y_2 = last_ten_box[max_area_index][3]
+                    
+                    cx = x_1+(x_2-x_1)/2  
+
+                    pos2 = time.time()
+                    pos = pos2-pos1
+                    print(f"POSITION TIME IS: {pos}")
+                    return cx
+                    
+            else:
+                print("no box detected")     
+
+   
+
+
+
+
 while True:
     #capture rgb and sensor reading
     distance_latest, timestamp_s = sensor_reading(sensor)
@@ -85,6 +132,10 @@ while True:
     results = model.track(frame)
     image = results[0].plot()
     cv2.imshow('YOLOv8 Detection', image)
+
+    #setting up area list that clears each time while loop iterates (or for every new frame)
+    areas = []
+    areas = deque(maxlen=10)
 
     #setting up the last three camera frames to be stored in list and dictionary for frame timestamp comparison
     camera_buffer.append((timestamp_c, results)) #add the results in each corresponding key
@@ -96,9 +147,12 @@ while True:
 
     if distance_check(distance_latest) is True:
         if object_detected(correct_frame) is True:
+            # return position index from object localization
+            cx = object_localization(correct_frame)
             ledr.on()
             ledl.on()
         else:
+            #both buzzers output buzzzing frequency relative to distance
             ledr.off()
             ledl.off()
     else:
