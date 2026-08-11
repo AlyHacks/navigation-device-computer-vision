@@ -118,7 +118,25 @@ def object_localization(correct_frame):
             else:
                 print("no box detected")     
 
-   
+def led_buzzer_control(cx, distance, ledr, ledl):
+    buzz1 = time.time()
+    x = cx/640   #the position of object is a fraction from 0 to 1, 0 is left#turns on the led for a time based on distance
+    if (cx>0 and cx<213) and distance < 1000:
+        ledr.off()
+        ledl.blink(on_time=0.25, off_time=(distance*x)/100)
+    elif (cx>=213 and cx<426) and distance < 1000:
+        ledr.blink(on_time=0.25, off_time=(distance*x)/100)
+        ledl.blink(on_time=0.25, off_time=(distance*(1-x))/100)
+    elif (cx>=426 and cx<640) and distance < 1000:
+        ledl.off()
+        ledr.blink(on_time=0.25, off_time=(distance/100*x))
+    else:
+        ledr.off()
+        ledl.off()
+
+    buzz2 = time.time()
+    buzz = buzz2-buzz1
+    print(f"BUZZ TIME IS: {buzz}")
 
 
 
@@ -149,8 +167,7 @@ while True:
         if object_detected(correct_frame) is True:
             # return position index from object localization
             cx = object_localization(correct_frame)
-            ledr.on()
-            ledl.on()
+            led_buzzer_control(cx, distance_latest, ledr, ledl)
         else:
             #both buzzers output buzzzing frequency relative to distance
             ledr.blink(ontime=0.1, off_time=distance_latest/1000)
