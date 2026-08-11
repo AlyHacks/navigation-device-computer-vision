@@ -85,7 +85,7 @@ def position(frame, timestamp_c, results, last_three_c, correct_index, ledr, led
     pos1 = time.time()
     for timestamp_c, frame, results in last_three_c:#[correct_index]:#iterates througuh the correct camera frame
         for result in results:
-            if box in result.boxes is not None:
+            if len(result.boxes) > 0:
                 for box in result.boxes:
                     class_id = int(box.cls[0])
                     class_name = model.names[class_id]
