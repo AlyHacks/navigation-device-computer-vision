@@ -88,23 +88,27 @@ def position(frame, timestamp_c, results, last_three_c, correct_index, ledr, led
     pos1 = time.time()
     for timestamp_c, frame, results in last_three_c:#[correct_index]:#iterates througuh the correct camera frame
         for result in results:
-            for box in result.boxes:
-                class_id = int(box.cls[0])
-                class_name = model.names[class_id]
-                fused["object"] = class_name  #gets object
-                x1, y1, x2, y2= box.xyxy[0]
-                
-                x1 = x1.item()
-                x2 = x2.item()
-                y1 = y1.item()
-                y2 = y2.item()
-                
-                             
-                
-                pos2 = time.time()
-                pos = pos2-pos1
-                print(f"POSITION TIME IS: {pos}")
-                return x1, y1, x2, y2          
+            if box in result.boxes is not None:
+                for box in result.boxes:
+                    class_id = int(box.cls[0])
+                    class_name = model.names[class_id]
+                    fused["object"] = class_name  #gets object
+                    x1, y1, x2, y2= box.xyxy[0]
+                    
+                    x1 = x1.item()
+                    x2 = x2.item()
+                    y1 = y1.item()
+                    y2 = y2.item()
+                    
+                                
+                    
+                    pos2 = time.time()
+                    pos = pos2-pos1
+                    print(f"POSITION TIME IS: {pos}")
+                    return x1, y1, x2, y2
+            else:
+                print("no box detected")
+                return 0, 0, 0, 0          
                 
 
 
