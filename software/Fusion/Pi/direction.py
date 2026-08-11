@@ -1,3 +1,5 @@
+from turtle import distance
+
 from ultralytics import YOLO
 import cv2
 from picamera2 import Picamera2
@@ -97,12 +99,12 @@ def position(frame, timestamp_c, results, last_three_c, correct_index, ledr, led
                 y1 = y1.item()
                 y2 = y2.item()
                 
-                cx, x_1, x_2, y_1, y_2 = max_area(x1, x2, y1, y2, areas, last_ten_box)             
+                             
                 
                 pos2 = time.time()
                 pos = pos2-pos1
                 print(f"POSITION TIME IS: {pos}")
-                return cx            
+                return x1, y1, x2, y2          
                 
 
 
@@ -159,9 +161,11 @@ def main(ledr, ledl, sensor, picam2, model, camera_buffer, tof_buffer, compare, 
         loop1 = time.time()
         pos1 = time.time()
         
-        cx = position(frame, timestamp_c, results, last_three_c, correct_index, ledr, ledl, areas, last_ten_box, fused)
+        x1, y1, x2, y2 = position(frame, timestamp_c, results, last_three_c, correct_index, ledr, ledl, areas, last_ten_box, fused)
+        cx, x_1, x_2, y_1, y_2 = max_area(x1, x2, y1, y2, areas, last_ten_box)
         buzzing(cx, distance, ledr, ledl)
-        
+
+
         loop2 = time.time()
         entireloop = loop2-loop1
         print(f"TOTAL LOOP TIME: {entireloop}")
