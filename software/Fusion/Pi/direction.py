@@ -82,7 +82,7 @@ def max_area(x1, x2, y1, y2, areas, last_ten_box):
     cx = x_1+(x_2-x_1)/2  
     return cx, x_1, y_1, x_2, y_2
 
-def position(timestamp_c, distance, results, last_three_c, correct_index, ledr, ledl, areas, last_ten_box, fused):
+def position(frame, timestamp_c, distance, results, last_three_c, correct_index, ledr, ledl, areas, last_ten_box, fused):
     pos1 = time.time()
     for timestamp_c, frame, results in last_three_c:#[correct_index]:#iterates througuh the correct camera frame
         for result in results:
@@ -157,7 +157,7 @@ def main(ledr, ledl, sensor, picam2, model, camera_buffer, tof_buffer, compare, 
         
         loop1 = time.time()
         pos1 = time.time()
-        position(ledr, ledl, sensor, picam2, model, camera_buffer, tof_buffer, compare, last_ten_box, fused)
+        position(frame, timestamp_c, distance, results, last_three_c, correct_index, ledr, ledl, areas, last_ten_box, fused)
             
         
         loop2 = time.time()
