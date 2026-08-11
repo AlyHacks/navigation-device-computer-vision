@@ -64,6 +64,12 @@ def timestamp_compare(timestamp_c, timestamp_s, compare, camera_buffer_dict, dis
 def dictionary_update(correct_timestamp, timestamp_s, correct_frame, distance_latest):
     fused.update({"timestamp_c": correct_timestamp, "timestamp_s": timestamp_s, "object": correct_frame, "distance": distance_latest}) #update the fused dictionary with the correct value
 
+def distance_check(distance_latest):
+    if distance_latest < 1000:
+        return True
+    else:
+        return False
+
 
 while True:
     #capture rgb and sensor reading
@@ -83,3 +89,8 @@ while True:
     correct_timestamp, timestamp_s, correct_frame, distance_latest = timestamp_compare(timestamp_c, timestamp_s, compare, camera_buffer_dict, distance_latest) #compare declared in beginning of the code
     dictionary_update(correct_timestamp, timestamp_s, correct_frame, distance_latest) #update the fused dictionary with the correct values
 
+    if distance_check(distance_latest) is True:
+
+    else:
+        ledr.off()
+        ledl.off()
