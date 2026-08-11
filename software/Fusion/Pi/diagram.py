@@ -13,8 +13,9 @@ ledl = LED(5)
 ledr = LED(4)
 
 #creation of buffers and the fused dictionary to store the matched rgb and sensor frames
+camera_buffer_dict = {}
 camera_buffer = []
-camera_buffer = deque(maxlen=20)
+camera_buffer = deque(maxlen=3)
 distance_latest = None
 fused = {"timestamp_c": 0, "timestamp_s": 0,  "object": 0, "distance": 0}
 compare = []
@@ -51,14 +52,20 @@ def cam_reading(picam2):
     timestamp_c = time.monotonic_ns() #timestamp for the camera frame
     return frame, timestamp_c
 
-def timestamp_compare(timestamp_c, timestamp_s, compare):
-    for timestamp_c in last_three_c:
-        difference = abs(timestamp_c-timestamp_s) #finds the closest camrea frame timestamp to the closest sensor reading
-        compare.append(difference)
-        correct_index = compare.index(min(compare))
-        
+def timestamp_compare(timestamp_c, timestamp_s, compare, camera_buffer_dict, distance_latest):
+    for timestamp_c in camera_buffer_dict.values():
+        if timestamp_c is not None:
+            difference = abs(timestamp_c-timestamp_s) #finds the closest camrea frame timestamp to the closest sensor reading
+            compare.append(difference)
+            correct_timestamp = min(compare)
+            correct_frame = camera_buffer_dict[correct_timestamp] #finds the respective frame to the correct timestamp
+            return correct_timestamp, timestamp_s, correct_frame, distance_latest
+def dictionary_update(correct_timestamp, timestamp_s, correct_frame, distance_latest):
+    fused.update({"timestamp_c": correct_timestamp, "timestamp_s": timestamp_s, "object": correct_frame, "distance": distance_latest}) #update the fused dictionary with the correct value
+
 
 while True:
+    #capture rgb and sensor reading
     distance_latest, timestamp_s = sensor_reading(sensor)
     frame, timestamp_c = cam_reading(picam2)
 
@@ -67,9 +74,11 @@ while True:
     image = results[0].plot()
     cv2.imshow('YOLOv8 Detection', image)
 
-    camera_buffer.append((timestamp_c, frame, results))
-    last_three_c = list(camera_buffer)[-3:]  # Get the last three camera frames
+    #setting up the last three camera frames to be stored in list and dictionary for frame timestamp comparison
+    camera_buffer.append((timestamp_c, results)) #add the results in each corresponding key
+    last_three_c = list(camera_buffer)[-3:]  #obtain values/items of dictionary and store in a list
+    camera_buffer_dict.update({last_three_c[0][0]: last_three_c[0][1], last_three_c[1][0]: last_three_c[1][1], last_three_c[2][0]: last_three_c[2][1]}) #update the dictionary with the latest camera frames
 
-    timestamp_compare(timestamp_c, timestamp_s, compare)
-
+    correct_timestamp, timestamp_s, correct_frame, distance_latest = timestamp_compare(timestamp_c, timestamp_s, compare, camera_buffer_dict, distance_latest) #compare declared in beginning of the code
+    dictionary_update(correct_timestamp, timestamp_s, correct_frame, distance_latest) #update the fused dictionary with the correct values
 
