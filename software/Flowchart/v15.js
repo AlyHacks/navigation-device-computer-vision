@@ -1,6 +1,7 @@
 ---
 config:
   layout: dagre
+id: 8cb0ddeb-12c9-4671-9e85-eb5b82f8d28e
 ---
 flowchart TB
  subgraph Legend["Legend"]
@@ -25,13 +26,11 @@ flowchart TB
     n52 --> n53["Position index"]
     n53 --> n54@{ label: "<span style=\"background-color:\">If 0&lt;index&lt;320, left buzzer buzzes with frequency relative to distance</span>" } & n55["If 320&lt;index&lt;640, right buzzer buzzes with frequency relative to distance"]
     n10 --> n43
-    n47["No ouput"]
 
     A@{ shape: lean-r}
     n1@{ shape: lean-r}
     C@{ shape: event}
     n43@{ shape: diam}
-    n47@{ shape: rect}
     n46@{ shape: rounded}
     n52@{ shape: rounded}
     n54@{ shape: rect}
@@ -55,7 +54,6 @@ flowchart TB
     style n9 fill:#FFF9C4
     style n43 fill:#C8E6C9
     style n44 fill:#BBDEFB
-    style n47 fill:#BBDEFB
     style n46 fill:#C8E6C9
     style n52 fill:#C8E6C9
     style n38 fill:#BBDEFB

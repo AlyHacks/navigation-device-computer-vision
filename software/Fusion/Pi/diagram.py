@@ -60,6 +60,7 @@ def timestamp_compare(timestamp_c, timestamp_s, compare, camera_buffer_dict, dis
             correct_timestamp = min(compare)
             correct_frame = camera_buffer_dict[correct_timestamp] #finds the respective frame to the correct timestamp
             return correct_timestamp, timestamp_s, correct_frame, distance_latest
+
 def dictionary_update(correct_timestamp, timestamp_s, correct_frame, distance_latest):
     fused.update({"timestamp_c": correct_timestamp, "timestamp_s": timestamp_s, "object": correct_frame, "distance": distance_latest}) #update the fused dictionary with the correct value
 
