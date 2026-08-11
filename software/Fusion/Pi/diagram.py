@@ -16,7 +16,7 @@ ledr = LED(4)
 camera_buffer = []
 camera_buffer = deque(maxlen=20)
 distance_latest = None
-fused = {"timestamp": 0, "distance": 0, "object": 0}
+fused = {"timestamp_c": 0, "timestamp_s": 0,  "object": 0, "distance": 0}
 compare = []
 compare = deque(maxlen=3)
 correct_index = 0
@@ -51,21 +51,12 @@ def cam_reading(picam2):
     timestamp_c = time.monotonic_ns() #timestamp for the camera frame
     return frame, timestamp_c
 
-def frame_calc(timestamp_c, compare, distance_latest, last_three_c, fused):
-        for frame in last_three_c:
-            frame_timestamp_c = frame[0]
-            
-            difference = abs(frame_timestamp_c-distance_latest) #finds the closest camrea frame timestamp to the closest sensor reading
-            compare.append(difference) #stores it in a compare list to compare the three differences
-            
-            correct_index = compare.index(min(compare)) #finds the index of the minimum 0->-3, 1->-2, 2->-1
-            
-            fused["timestamp"] = last_three_c[correct_index][0] #gets the correct timestamp of camera frame,        
-            fused["distance"] = distance #takes the distance from the last_s tuple
-            distance_latest = fused["distance"]
-
-            compare.clear() #clears the compare list for the next iteration
-        return distance_latest, correct_index, fused
+def timestamp_compare(timestamp_c, timestamp_s, compare):
+    for timestamp_c in last_three_c:
+        difference = abs(timestamp_c-timestamp_s) #finds the closest camrea frame timestamp to the closest sensor reading
+        compare.append(difference)
+        correct_index = compare.index(min(compare))
+        
 
 while True:
     distance_latest, timestamp_s = sensor_reading(sensor)
@@ -76,5 +67,9 @@ while True:
     image = results[0].plot()
     cv2.imshow('YOLOv8 Detection', image)
 
+    camera_buffer.append((timestamp_c, frame, results))
+    last_three_c = list(camera_buffer)[-3:]  # Get the last three camera frames
+
+    timestamp_compare(timestamp_c, timestamp_s, compare)
 
 
