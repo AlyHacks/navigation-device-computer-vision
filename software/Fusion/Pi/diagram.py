@@ -70,7 +70,12 @@ def distance_check(distance_latest):
     else:
         return False
 
-
+def object_detected(correct_frame):
+    if correct_frame is not None:
+        return True
+    else:
+        return False
+    
 while True:
     #capture rgb and sensor reading
     distance_latest, timestamp_s = sensor_reading(sensor)
@@ -90,7 +95,12 @@ while True:
     dictionary_update(correct_timestamp, timestamp_s, correct_frame, distance_latest) #update the fused dictionary with the correct values
 
     if distance_check(distance_latest) is True:
-
+        if object_detected(correct_frame) is True:
+            ledr.on()
+            ledl.on()
+        else:
+            ledr.off()
+            ledl.off()
     else:
         ledr.off()
         ledl.off()
