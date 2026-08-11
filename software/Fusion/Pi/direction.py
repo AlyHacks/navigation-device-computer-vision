@@ -1,5 +1,3 @@
-from turtle import distance
-
 from ultralytics import YOLO
 import cv2
 from picamera2 import Picamera2
