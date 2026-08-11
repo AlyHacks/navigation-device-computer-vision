@@ -13,7 +13,6 @@ setup1 = time.time()
 
 ledl = LED(5)
 ledr = LED(4)
-
 camera_buffer = []
 tof_buffer = []
 fused = {"timestamp": 0, "distance": 0, "object": 0}
