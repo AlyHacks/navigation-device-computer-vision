@@ -138,9 +138,6 @@ def led_buzzer_control(cx, distance, ledr, ledl):
     buzz = buzz2-buzz1
     print(f"BUZZ TIME IS: {buzz}")
 
-
-
-
 while True:
     #capture rgb and sensor reading
     distance_latest, timestamp_s = sensor_reading(sensor)
