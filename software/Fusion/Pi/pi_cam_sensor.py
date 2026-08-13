@@ -88,7 +88,8 @@ while True:
             fused["object"] = class_name #gets object
             
             print(fused)
-            
+
+        buzz1 = time.time()
         if fused["distance"] < 1000:
             led.on()
             time.sleep(0.25) #turns on the led for a time based on distance
@@ -96,6 +97,8 @@ while True:
             time.sleep(fused["distance"]/100) #turns off the led for a time based on distance
         else:
             led.off()
+        buzz2 = time.time()
+        buzz = buzz2-buzz1
                 
         
         
