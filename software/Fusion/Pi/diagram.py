@@ -175,6 +175,10 @@ while True:
 
 
     if cv2.waitKey(1) == ord('q'):
-                print("error")
-                break
-            time.sleep(0.05)
+        print("error")
+        break
+    time.sleep(0.05)
+
+
+picam2.stop()
+cv2.destroyAllWindows()
