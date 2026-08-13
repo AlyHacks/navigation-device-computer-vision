@@ -172,3 +172,9 @@ while True:
     else:
         ledr.off()
         ledl.off()
+
+
+    if cv2.waitKey(1) == ord('q'):
+                print("error")
+                break
+            time.sleep(0.05)
