@@ -35,22 +35,34 @@ model = YOLO('yolov8n.pt')
 
 
 #configure the picam2 settings to be the correct format of 640x480 and RGB888 for the yolo model to work properly
+config1 = time.time()
 picam2.configure(
     picam2.create_preview_configuration(
         main={"size": (640, 480), "format": "RGB888"}
     )
 )
+config2 = time.time()
+config = config2-config1
+print(f"CONFIG TIME IS: {config}")
 
 def sensor_reading(sensor):
+    sensor1 = time.time()
     sensor.start_ranging()
     distance = sensor.distance #LiDAR frame/distance
     timestamp_s = time.monotonic_ns() #obtain the timestamp
     #distance = starting() #Don't know if this is necessary
+    sensor2 = time.time()
+    sensor_time = sensor2-sensor1
+    print(f"SENSOR TIME IS: {sensor_time}")
     return distance, timestamp_s
 
 def cam_reading(picam2):
+    cam1 = time.time()
     frame = picam2.capture_array()
     timestamp_c = time.monotonic_ns() #timestamp for the camera frame
+    cam2 = time.time()
+    cam_time = cam2-cam1
+    print(f"CAMERA TIME IS: {cam_time}")
     return frame, timestamp_c
 
 def timestamp_compare(timestamp_c, timestamp_s, compare, camera_buffer_dict, distance_latest):
