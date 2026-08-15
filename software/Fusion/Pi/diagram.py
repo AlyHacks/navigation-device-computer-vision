@@ -66,6 +66,7 @@ def cam_reading(picam2):
     return frame, timestamp_c
 
 def timestamp_compare(timestamp_c, timestamp_s, compare, camera_buffer_dict, distance_latest):
+    compare1 = time.time()
     for timestamp_c in camera_buffer_dict.values():
         if timestamp_c is not None:
             difference = abs(timestamp_c-timestamp_s) #finds the closest camrea frame timestamp to the closest sensor reading
@@ -73,9 +74,16 @@ def timestamp_compare(timestamp_c, timestamp_s, compare, camera_buffer_dict, dis
             correct_timestamp = min(compare)
             correct_frame = camera_buffer_dict[correct_timestamp] #finds the respective frame to the correct timestamp
             return correct_timestamp, timestamp_s, correct_frame, distance_latest
+    compare2 = time.time()
+    compare_time = compare2-compare1
+    print(f"COMPARE TIME IS: {compare_time}")
 
 def dictionary_update(correct_timestamp, timestamp_s, correct_frame, distance_latest):
+    diction1 = time.time()
     fused.update({"timestamp_c": correct_timestamp, "timestamp_s": timestamp_s, "object": correct_frame, "distance": distance_latest}) #update the fused dictionary with the correct value
+    diction2 = time.time()
+    diction_time = diction2-diction1
+    print(f"DICTIONARY TIME IS: {diction_time}")
 
 def distance_check(distance_latest):
     if distance_latest < 1000:
