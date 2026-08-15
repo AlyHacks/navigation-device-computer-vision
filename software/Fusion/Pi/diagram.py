@@ -86,15 +86,29 @@ def dictionary_update(correct_timestamp, timestamp_s, correct_frame, distance_la
     print(f"DICTIONARY TIME IS: {diction_time}")
 
 def distance_check(distance_latest):
+    dist_check1 = time.time()
     if distance_latest < 1000:
+        dist_check2 = time.time()
+        dist_check_time = dist_check2-dist_check1
+        print(f"DISTANCE CHECK TIME IS: {dist_check_time}")
         return True
     else:
+        dist_check2 = time.time()
+        dist_check_time = dist_check2-dist_check1
+        print(f"DISTANCE CHECK TIME IS: {dist_check_time}")
         return False
 
 def object_detected(correct_frame):
+    obj_detect1 = time.time()
     if correct_frame is not None:
+        obj_detect2 = time.time()
+        obj_detect_time = obj_detect2-obj_detect1
+        print(f"OBJECT DETECT TIME IS: {obj_detect_time}")
         return True
     else:
+        obj_detect2 = time.time()
+        obj_detect_time = obj_detect2-obj_detect1
+        print(f"OBJECT DETECT TIME IS: {obj_detect_time}")
         return False
 
 def object_localization(correct_frame):
