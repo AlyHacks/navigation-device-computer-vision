@@ -173,6 +173,7 @@ def led_buzzer_control(cx, distance, ledr, ledl):
     print(f"BUZZ TIME IS: {buzz}")
 
 while True:
+    loop1 = time.time()
     #capture rgb and sensor reading
     distance_latest, timestamp_s = sensor_reading(sensor)
     frame, timestamp_c = cam_reading(picam2)
@@ -187,9 +188,13 @@ while True:
     areas = deque(maxlen=10)
 
     #setting up the last three camera frames to be stored in list and dictionary for frame timestamp comparison
+    cam_buffer1 = time.time()
     camera_buffer.append((timestamp_c, results)) #add the results in each corresponding key
     last_three_c = list(camera_buffer)[-3:]  #obtain values/items of dictionary and store in a list
     camera_buffer_dict.update({last_three_c[0][0]: last_three_c[0][1], last_three_c[1][0]: last_three_c[1][1], last_three_c[2][0]: last_three_c[2][1]}) #update the dictionary with the latest camera frames
+    cam_buffer2 = time.time()   
+    cam_buffer_time = cam_buffer2-cam_buffer1
+    print(f"CAMERA BUFFER TIME IS: {cam_buffer_time}")
 
     correct_timestamp, timestamp_s, correct_frame, distance_latest = timestamp_compare(timestamp_c, timestamp_s, compare, camera_buffer_dict, distance_latest) #compare declared in beginning of the code
     dictionary_update(correct_timestamp, timestamp_s, correct_frame, distance_latest) #update the fused dictionary with the correct values
@@ -207,7 +212,9 @@ while True:
         ledr.off()
         ledl.off()
 
-
+    loop2 = time.time()
+    loops = loop2-loop1
+    print(f"LOOP TIME IS: {loops}")
     if cv2.waitKey(1) == ord('q'):
         print("error")
         break
