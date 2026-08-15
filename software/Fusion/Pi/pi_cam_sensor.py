@@ -49,6 +49,7 @@ tof_buffer = deque(maxlen=20)
 compare = deque(maxlen=3)
 
 while True:
+    loop1 = time.time()
     try:
         frame = picam2.capture_array()
         timestamp_c = time.monotonic_ns() #does not jump even if system clock changes
@@ -68,13 +69,16 @@ while True:
         last_three_c = list(camera_buffer)[-3:] #takes the latest 3 camera frames
         last_s = tof_buffer[-1] #takes the last sensor frame
         
+        position1 = time.time()
         for timestamp, distance, results in last_three_c: #iterates througuh the 3 camera frames
             for result in results:
                 for box in result.boxes:
                     class_id = int(box.cls[0])
                     class_name = model.names[class_id]
                     x1, y1, x2, y2= box.xyxy[0]
-            
+                    position2 = time.time()
+                    position = position2-position1
+                    print(f"POSITION TIME IS: {position}")
             
             difference = abs(timestamp_c-timestamp_s) #finds the closest camrea frame timestamp to the closest sensor reading
             compare.append(difference) #stores it in a compare list to compare the three differences
@@ -102,7 +106,9 @@ while True:
                 
         
         
-        
+        loop2 = time.time()
+        loops = loop2-loop1
+        print(f"LOOP TIME IS: {loops}") 
     except KeyboardInterrupt:
         print("error")
         break
