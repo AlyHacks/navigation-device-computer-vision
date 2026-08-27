@@ -61,6 +61,8 @@ def sensor_reading(sensor):
 
 def cam_reading(picam2):
     cam1 = time.time()
+    picam2.start()
+    time.sleep(2)
     frame = picam2.capture_array()
     timestamp_c = time.monotonic_ns() #timestamp for the camera frame
     cam2 = time.time()
