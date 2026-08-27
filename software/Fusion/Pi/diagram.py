@@ -74,6 +74,8 @@ def timestamp_compare(timestamp_c, timestamp_s, compare, camera_buffer_dict, dis
     compare1 = time.time()
     for timestamp_c in camera_buffer_dict.values():
         if timestamp_c is not None:
+            print(f"{type(timestamp_c)} timestamp_c")
+            print(f"{type(timestamp_s)} timestamp_s")
             difference = abs(timestamp_c-timestamp_s) #finds the closest camrea frame timestamp to the closest sensor reading
             compare.append(difference)
             correct_timestamp = min(compare)
