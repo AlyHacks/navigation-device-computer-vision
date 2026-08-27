@@ -186,6 +186,7 @@ while True:
 
     print("starting cam reading")
     frame, timestamp_c = cam_reading(picam2)
+    print(f"{type(timestamp_c)} timestamp_c")
     print("finished cam reading")
 
     #plotting results from cam frame to yolo model and displaying it on the screen
