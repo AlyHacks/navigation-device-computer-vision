@@ -179,7 +179,10 @@ while True:
     loop1 = time.time()
     #capture rgb and sensor reading
     distance_latest, timestamp_s = sensor_reading(sensor)
+
+    print("starting cam reading")
     frame, timestamp_c = cam_reading(picam2)
+    print("finished cam reading")
 
     #plotting results from cam frame to yolo model and displaying it on the screen
     results = model.track(frame)
