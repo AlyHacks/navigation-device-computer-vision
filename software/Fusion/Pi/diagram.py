@@ -80,7 +80,7 @@ def timestamp_compare(timestamp_c, timestamp_s, compare, camera_buffer_dict, dis
             compare.append(difference)
             correct_timestamp = min(compare)
             print(compare)
-            print(f"{type(correct_timestamp)} correct_timestamp")
+            print(correct_timestamp)
             correct_frame = camera_buffer_dict[correct_timestamp] #finds the respective frame to the correct timestamp
             print(f"{type(correct_frame)} correct_frame")
             return correct_timestamp, timestamp_s, correct_frame, distance_latest
