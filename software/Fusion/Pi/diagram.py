@@ -9,6 +9,9 @@ import numpy as np
 from gpiozero import LED
 from collections import deque
 
+entire1 = time.time()
+
+
 ledl = LED(5)
 ledr = LED(4)
 
@@ -214,7 +217,12 @@ while True:
 
     loop2 = time.time()
     loops = loop2-loop1
+
+    entire2 = time.time()
+    entire = entire2-entire1
+
     print(f"LOOP TIME IS: {loops}")
+    print(f"ENTIRE TIME IS: {entire}")
     if cv2.waitKey(1) == ord('q'):
         print("error")
         break
