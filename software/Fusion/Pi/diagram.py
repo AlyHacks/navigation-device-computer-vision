@@ -199,7 +199,12 @@ while True:
     cam_buffer1 = time.time()
     camera_buffer.append((timestamp_c, results)) #add the results in each corresponding key
     last_three_c = list(camera_buffer)[-3:]  #obtain values/items of dictionary and store in a list
-    camera_buffer_dict.update({last_three_c[0][0]: last_three_c[0][1], last_three_c[1][0]: last_three_c[1][1], last_three_c[2][0]: last_three_c[2][1]}) #update the dictionary with the latest camera frames
+    if len(last_three_c) == 1:
+        camera_buffer_dict.update({last_three_c[0][0]: last_three_c[0][1]}) #update the dictionary with the latest camera frames as timestamp: results
+    elif len(last_three_c) == 2:
+        camera_buffer_dict.update({last_three_c[0][0]: last_three_c[0][1], last_three_c[1][0]: last_three_c[1][1]}) #update the dictionary with the latest camera frames as timestamp: results    
+    elif len(last_three_c) == 3:
+        camera_buffer_dict.update({last_three_c[0][0]: last_three_c[0][1], last_three_c[1][0]: last_three_c[1][1], last_three_c[2][0]: last_three_c[2][1]}) #update the dictionary with the latest camera frames as timestamp: results
     cam_buffer2 = time.time()   
     cam_buffer_time = cam_buffer2-cam_buffer1
     print(f"CAMERA BUFFER TIME IS: {cam_buffer_time}")
