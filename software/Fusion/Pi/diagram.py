@@ -53,7 +53,7 @@ picam2.start()
 time.sleep(2)
 cam_end = time.time()
 cam_time = cam_end-cam_start
-print(f"CAMERA START TIME IS: {cam_time}")
+#print(f"CAMERA START TIME IS: {cam_time}")
 
 def sensor_reading(sensor):
     sensor1 = time.time()
