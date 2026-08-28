@@ -147,7 +147,6 @@ def led_buzzer_control(cx, distance, ledr, ledl):
 
 
 while True:
-    loopcount += 1
     #capture rgb and sensor reading
     distance_latest, timestamp_s = sensor_reading(sensor)
     frame, timestamp_c = cam_reading(picam2)
