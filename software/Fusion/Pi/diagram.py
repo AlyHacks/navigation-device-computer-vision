@@ -78,17 +78,13 @@ def timestamp_compare(timestamp_c, timestamp_s, compare, camera_buffer_dict, dis
             compare.append((difference, timestamp_c)) #stores the difference and the respective camera frame timestamp in a list
             #get minimum difference and its index, then retrieve timestamp
             minimum_difference = (10000000000000, 0)
-            print(compare)
             for i in compare:
                 if i[0] is not None:
                     if i[0] < minimum_difference[0]:
                         minimum_difference = i
             correct_timestamp_index = compare.index(minimum_difference) #finds the minimum difference between the camera frame timestamp and the sensor reading timestamp
-            print(correct_timestamp_index)
             correct_timestamp = compare[correct_timestamp_index][1] #retrieves the camera frame timestamp corresponding to the minimum difference
-            print(correct_timestamp)
             correct_frame = camera_buffer_dict[correct_timestamp] #finds the respective frame to the correct timestamp
-            print(correct_frame)
     compare2 = time.time()
     compare_time = compare2-compare1
     print(f"COMPARE TIME IS: {compare_time}")
