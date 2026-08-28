@@ -194,11 +194,7 @@ while True:
     loop1 = time.time()
     #capture rgb and sensor reading
     distance_latest, timestamp_s = sensor_reading(sensor)
-
-    print("starting cam reading")
     frame, timestamp_c = cam_reading(picam2)
-    print(f"{type(timestamp_c)} timestamp_c")
-    print("finished cam reading")
 
     #plotting results from cam frame to yolo model and displaying it on the screen
     results = model.track(frame)
@@ -225,6 +221,7 @@ while True:
 
     correct_timestamp, timestamp_s, correct_frame, distance_latest = timestamp_compare(timestamp_c, timestamp_s, compare, camera_buffer_dict, distance_latest) #compare declared in beginning of the code
     dictionary_update(correct_timestamp, timestamp_s, correct_frame, distance_latest) #update the fused dictionary with the correct values
+    print(distance_latest)
 
     if distance_check(distance_latest) is True:
         if object_detected(correct_frame) is True:
