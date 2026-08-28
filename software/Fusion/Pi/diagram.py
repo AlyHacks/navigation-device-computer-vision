@@ -12,7 +12,7 @@ from collections import defaultdict, deque
 loopcount = 0
 ledl = LED(5)
 ledr = LED(4)
-cx = 0
+
 #creation of buffers and the fused dictionary to store the matched rgb and sensor frames
 camera_buffer_dict = defaultdict(lambda: deque(maxlen=3))
 camera_buffer = []
@@ -93,6 +93,7 @@ def object_detected(correct_frame):
         return False
 
 def object_localization(correct_frame):
+    cx = 0
     #position function
     for results in camera_buffer_dict.values():#iterates througuh the correct camera frame
         for result in results:
