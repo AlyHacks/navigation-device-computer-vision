@@ -88,10 +88,12 @@ def timestamp_compare(timestamp_c, timestamp_s, compare, camera_buffer_dict, dis
             print(correct_timestamp)
             correct_frame = camera_buffer_dict[correct_timestamp] #finds the respective frame to the correct timestamp
             print(correct_frame)
-            return correct_timestamp, timestamp_s, correct_frame, distance_latest
     compare2 = time.time()
     compare_time = compare2-compare1
     print(f"COMPARE TIME IS: {compare_time}")
+
+    return correct_timestamp, timestamp_s, correct_frame, distance_latest
+
 
 def dictionary_update(correct_timestamp, timestamp_s, correct_frame, distance_latest):
     diction1 = time.time()
