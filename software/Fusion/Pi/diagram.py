@@ -10,7 +10,7 @@ from gpiozero import LED
 from collections import deque
 
 entire1 = time.time()
-
+loopcount = 0
 
 ledl = LED(5)
 ledr = LED(4)
@@ -194,6 +194,7 @@ def led_buzzer_control(cx, distance, ledr, ledl):
 
 while True:
     loop1 = time.time()
+    loopcount += 1
     #capture rgb and sensor reading
     distance_latest, timestamp_s = sensor_reading(sensor)
     frame, timestamp_c = cam_reading(picam2)
@@ -240,9 +241,9 @@ while True:
 
     loop2 = time.time()
     loops = loop2-loop1
-
-    entire2 = time.time()
-    entire = entire2-entire1
+    if loopcount == 1:
+        entire2 = time.time()
+        entire = entire2-entire1
 
     print(f"LOOP TIME IS: {loops}")
     print(f"ENTIRE TIME IS: {entire}")
