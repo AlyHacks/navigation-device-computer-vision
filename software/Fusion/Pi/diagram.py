@@ -125,10 +125,13 @@ def object_localization(correct_frame):
                     
                     cx = x_1+(x_2-x_1)/2  
 
-                    return cx
-                    
+
             else:
                 print("FALSE")     #no box detected, no object detected
+
+    return cx
+                    
+
 
 def led_buzzer_control(cx, distance, ledr, ledl):
     x = cx/640   #the position of object is a fraction from 0 to 1, 0 is left#turns on the led for a time based on distance
