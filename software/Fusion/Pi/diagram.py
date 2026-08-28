@@ -55,7 +55,6 @@ def sensor_reading(sensor):
     return distance, timestamp_s
 
 def cam_reading(picam2):
-
     frame = picam2.capture_array()
     timestamp_c = time.monotonic_ns() #timestamp for the camera frame
     return frame, timestamp_c
@@ -97,6 +96,7 @@ def object_localization(correct_frame):
     #position function
     for results in camera_buffer_dict.values():#iterates througuh the correct camera frame
         for result in results:
+            print("TRUE") #box detected, object detected
             if len(result.boxes) > 0:
                 for box in result.boxes:
                     class_id = int(box.cls[0])
@@ -128,7 +128,7 @@ def object_localization(correct_frame):
                     return cx
                     
             else:
-                print("no box detected")     
+                print("FALSE")     #no box detected, no object detected
 
 def led_buzzer_control(cx, distance, ledr, ledl):
     x = cx/640   #the position of object is a fraction from 0 to 1, 0 is left#turns on the led for a time based on distance
