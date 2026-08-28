@@ -7,14 +7,14 @@ import busio
 import adafruit_vl53l1x
 import numpy as np
 from gpiozero import LED
-from collections import deque
+from collections import defaultdict, deque
 
-
+loopcount = 0
 ledl = LED(5)
 ledr = LED(4)
-
+cx = 0
 #creation of buffers and the fused dictionary to store the matched rgb and sensor frames
-camera_buffer_dict = {}
+camera_buffer_dict = defaultdict(lambda: deque(maxlen=3))
 camera_buffer = []
 camera_buffer = deque(maxlen=3)
 distance_latest = None
@@ -150,6 +150,7 @@ def led_buzzer_control(cx, distance, ledr, ledl):
 
 
 while True:
+    loopcount += 1
     #capture rgb and sensor reading
     distance_latest, timestamp_s = sensor_reading(sensor)
     frame, timestamp_c = cam_reading(picam2)
@@ -190,7 +191,8 @@ while True:
         ledr.off()
         ledl.off()
 
-
+    if loopcount*3 >= 555:
+        break
     if cv2.waitKey(1) == ord('q'):
         print("error")
         break
