@@ -157,7 +157,7 @@ while True:
     #plotting results from cam frame to yolo model and displaying it on the screen
     results = model.track(frame)
     image = results[0].plot()
-    cv2.imshow('YOLOv8 Detection', image)
+    #cv2.imshow('YOLOv8 Detection', image)
 
     #setting up area list that clears each time while loop iterates (or for every new frame)
     areas = []
