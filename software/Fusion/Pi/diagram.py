@@ -98,7 +98,7 @@ def object_localization(correct_frame):
     for results in camera_buffer_dict.values():#iterates througuh the correct camera frame
         for result in results:
             if len(result.boxes) > 0:
-                print("TRUE") #box detected, object detected
+                print("1") #box detected, object detected
                 for box in result.boxes:
                     class_id = int(box.cls[0])
                     class_name = model.names[class_id]
@@ -128,7 +128,7 @@ def object_localization(correct_frame):
 
 
             else:
-                print("FALSE")     #no box detected, no object detected
+                print("0")     #no box detected, no object detected
 
     return cx
                     
