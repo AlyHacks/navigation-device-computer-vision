@@ -35,6 +35,7 @@ picam2 = Picamera2()
 model = YOLO('yolov8n.pt')
 
 
+
 #configure the picam2 settings to be the correct format of 640x480 and RGB888 for the yolo model to work properly
 picam2.configure(
     picam2.create_preview_configuration(
