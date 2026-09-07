@@ -9,7 +9,7 @@ import numpy as np
 from gpiozero import LED
 from collections import deque
 
-entire1 = time.time()
+entire1 = time.perf_counter()
 loopcount = 0
 
 ledl = LED(5)
@@ -38,46 +38,46 @@ model = YOLO('yolov8n.pt')
 
 
 #configure the picam2 settings to be the correct format of 640x480 and RGB888 for the yolo model to work properly
-config1 = time.time()
+config1 = time.perf_counter()
 picam2.configure(
     picam2.create_preview_configuration(
         main={"size": (640, 480), "format": "RGB888"}
     )
 )
-config2 = time.time()
+config2 = time.perf_counter()
 config = config2-config1
 print(f"CONFIG TIME IS: {config}")
 
-cam_start = time.time()
+cam_start = time.perf_counter()
 picam2.start()
 time.sleep(2)
-cam_end = time.time()
+cam_end = time.perf_counter()
 cam_time = cam_end-cam_start
 #print(f"CAMERA START TIME IS: {cam_time}")
 
 def sensor_reading(sensor):
-    sensor1 = time.time()
+    sensor1 = time.perf_counter()
     sensor.start_ranging()
     distance = sensor.distance #LiDAR frame/distance
     timestamp_s = time.monotonic_ns() #obtain the timestamp
     #distance = starting() #Don't know if this is necessary
-    sensor2 = time.time()
+    sensor2 = time.perf_counter()
     sensor_time = sensor2-sensor1
     print(f"SENSOR TIME IS: {sensor_time}")
     return distance, timestamp_s
 
 def cam_reading(picam2):
-    cam1 = time.time()
+    cam1 = time.perf_counter()
 
     frame = picam2.capture_array()
     timestamp_c = time.monotonic_ns() #timestamp for the camera frame
-    cam2 = time.time()
+    cam2 = time.perf_counter()
     cam_time = cam2-cam1
     print(f"CAMERA TIME IS: {cam_time}")
     return frame, timestamp_c
 
 def timestamp_compare(timestamp_c, timestamp_s, compare, camera_buffer_dict, distance_latest):
-    compare1 = time.time()
+    compare1 = time.perf_counter()
     for timestamp_c in camera_buffer_dict.keys():
         if timestamp_c is not None:
             difference = abs(timestamp_c-timestamp_s) #finds the closest camrea frame timestamp to the closest sensor reading
@@ -91,7 +91,7 @@ def timestamp_compare(timestamp_c, timestamp_s, compare, camera_buffer_dict, dis
             correct_timestamp_index = compare.index(minimum_difference) #finds the minimum difference between the camera frame timestamp and the sensor reading timestamp
             correct_timestamp = compare[correct_timestamp_index][1] #retrieves the camera frame timestamp corresponding to the minimum difference
             correct_frame = camera_buffer_dict[correct_timestamp] #finds the respective frame to the correct timestamp
-    compare2 = time.time()
+    compare2 = time.perf_counter()
     compare_time = compare2-compare1
     print(f"COMPARE TIME IS: {compare_time}")
 
@@ -99,41 +99,41 @@ def timestamp_compare(timestamp_c, timestamp_s, compare, camera_buffer_dict, dis
 
 
 def dictionary_update(correct_timestamp, timestamp_s, correct_frame, distance_latest):
-    diction1 = time.time()
+    diction1 = time.perf_counter()
     fused.update({"timestamp_c": correct_timestamp, "timestamp_s": timestamp_s, "object": correct_frame, "distance": distance_latest}) #update the fused dictionary with the correct value
-    diction2 = time.time()
+    diction2 = time.perf_counter()
     diction_time = diction2-diction1
     print(f"DICTIONARY TIME IS: {diction_time}")
 
 def distance_check(distance_latest):
-    dist_check1 = time.time()
+    dist_check1 = time.perf_counter()
     if distance_latest < 1000:
-        dist_check2 = time.time()
+        dist_check2 = time.perf_counter()
         dist_check_time = dist_check2-dist_check1
         print(f"DISTANCE CHECK TIME IS: {dist_check_time}")
         return True
     else:
-        dist_check2 = time.time()
+        dist_check2 = time.perf_counter()
         dist_check_time = dist_check2-dist_check1
         print(f"DISTANCE CHECK TIME IS: {dist_check_time}")
         return False
 
 def object_detected(correct_frame):
-    obj_detect1 = time.time()
+    obj_detect1 = time.perf_counter()
     if correct_frame is not None:
-        obj_detect2 = time.time()
+        obj_detect2 = time.perf_counter()
         obj_detect_time = obj_detect2-obj_detect1
         print(f"OBJECT DETECT TIME IS: {obj_detect_time}")
         return True
     else:
-        obj_detect2 = time.time()
+        obj_detect2 = time.perf_counter()
         obj_detect_time = obj_detect2-obj_detect1
         print(f"OBJECT DETECT TIME IS: {obj_detect_time}")
         return False
 
 def object_localization(correct_frame):
     #position function
-    pos1 = time.time()
+    pos1 = time.perf_counter()
     for results in camera_buffer_dict.values():#iterates througuh the correct camera frame
         for result in results:
             if len(result.boxes) > 0:
@@ -164,7 +164,7 @@ def object_localization(correct_frame):
                     
                     cx = x_1+(x_2-x_1)/2  
 
-                    pos2 = time.time()
+                    pos2 = time.perf_counter()
                     pos = pos2-pos1
                     print(f"POSITION TIME IS: {pos}")
                     return cx
@@ -173,7 +173,7 @@ def object_localization(correct_frame):
                 print("no box detected")     
 
 def led_buzzer_control(cx, distance, ledr, ledl):
-    buzz1 = time.time()
+    buzz1 = time.perf_counter()
     x = cx/640   #the position of object is a fraction from 0 to 1, 0 is left#turns on the led for a time based on distance
     if (cx>0 and cx<213) and distance < 1000:
         ledr.off()
@@ -188,12 +188,12 @@ def led_buzzer_control(cx, distance, ledr, ledl):
         ledr.off()
         ledl.off()
 
-    buzz2 = time.time()
+    buzz2 = time.perf_counter()
     buzz = buzz2-buzz1
     print(f"BUZZ TIME IS: {buzz}")
 
 while True:
-    loop1 = time.time()
+    loop1 = time.perf_counter()
     loopcount += 1
     #capture rgb and sensor reading
     distance_latest, timestamp_s = sensor_reading(sensor)
@@ -209,7 +209,7 @@ while True:
     areas = deque(maxlen=10)
 
     #setting up the last three camera frames to be stored in list and dictionary for frame timestamp comparison
-    cam_buffer1 = time.time()
+    cam_buffer1 = time.perf_counter()
     camera_buffer.append((timestamp_c, results)) #add the results in each corresponding key
     last_three_c = list(camera_buffer)[-3:]  #obtain values/items of dictionary and store in a list
     if len(last_three_c) == 1:
@@ -218,7 +218,7 @@ while True:
         camera_buffer_dict.update({last_three_c[0][0]: last_three_c[0][1], last_three_c[1][0]: last_three_c[1][1]}) #update the dictionary with the latest camera frames as timestamp: results    
     elif len(last_three_c) == 3:
         camera_buffer_dict.update({last_three_c[0][0]: last_three_c[0][1], last_three_c[1][0]: last_three_c[1][1], last_three_c[2][0]: last_three_c[2][1]}) #update the dictionary with the latest camera frames as timestamp: results
-    cam_buffer2 = time.time()   
+    cam_buffer2 = time.perf_counter()   
     cam_buffer_time = cam_buffer2-cam_buffer1
     print(f"CAMERA BUFFER TIME IS: {cam_buffer_time}")
 
@@ -239,10 +239,10 @@ while True:
         ledr.off()
         ledl.off()
 
-    loop2 = time.time()
+    loop2 = time.perf_counter()
     loops = loop2-loop1
     if loopcount == 1:
-        entire2 = time.time()
+        entire2 = time.perf_counter()
         entire = entire2-entire1
 
     print(f"LOOP TIME IS: {loops}")
