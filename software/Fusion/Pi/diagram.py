@@ -247,6 +247,10 @@ while True:
 
     print(f"LOOP TIME IS: {loops}")
     print(f"ENTIRE TIME IS: {entire}")
+
+    if loopcount == 50:
+        break
+
     if cv2.waitKey(1) == ord('q'):
         print("error")
         break
