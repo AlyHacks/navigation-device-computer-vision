@@ -192,7 +192,7 @@ while True:
         ledr.off()
         ledl.off()
 
-    if loopcount*3 >= 555:
+    if loopcount*3 >= 590:
         break
     if cv2.waitKey(1) == ord('q'):
         print("error")
