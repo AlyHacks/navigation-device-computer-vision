@@ -49,7 +49,6 @@ time.sleep(2)
 
 
 def sensor_reading(sensor):
-    sensor.start_ranging()
     distance = sensor.distance #LiDAR frame/distance
     timestamp_s = time.monotonic_ns() #obtain the timestamp
     #distance = starting() #Don't know if this is necessary
@@ -149,6 +148,7 @@ def led_buzzer_control(cx, distance, ledr, ledl):
         ledr.off()
         ledl.off()
 
+sensor.start_ranging()
 
 while True:
     loopcount += 1
