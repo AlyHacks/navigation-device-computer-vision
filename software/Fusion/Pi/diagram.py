@@ -166,6 +166,8 @@ while True:
     areas = deque(maxlen=10)
 
     #setting up the last three camera frames to be stored in list and dictionary for frame timestamp comparison
+    if len(camera_buffer) == 3:
+        camera_buffer_dict.clear()
     camera_buffer.append((timestamp_c, results)) #add the results in each corresponding key
     last_three_c = list(camera_buffer)[-3:]  #obtain values/items of dictionary and store in a list
     if len(last_three_c) == 1:
