@@ -50,8 +50,10 @@ print(f"CONFIG TIME IS: {config}")
 
 cam_start = time.perf_counter()
 picam2.start()
-time.sleep(2)
+
 cam_end = time.perf_counter()
+
+time.sleep(2)
 cam_time = cam_end-cam_start
 #print(f"CAMERA START TIME IS: {cam_time}")
 
