@@ -202,9 +202,13 @@ while True:
     frame, timestamp_c = cam_reading(picam2)
 
     #plotting results from cam frame to yolo model and displaying it on the screen
+    plot1 = time.perf_counter()
     results = model.track(frame)
     image = results[0].plot()
     cv2.imshow('YOLOv8 Detection', image)
+    plot2 = time.perf_counter()
+    plot_time = plot2-plot1
+    print(f"PLOT TIME IS: {plot_time}")
 
     #setting up area list that clears each time while loop iterates (or for every new frame)
     areas = []
