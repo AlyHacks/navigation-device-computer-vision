@@ -18,7 +18,7 @@ tof_buffer = []
 fused = {"timestamp": 0, "distance": 0, "object": 0}
 compare = []
 correct_index = 0
-last_ten_box = []
+last_ten_box = deque(maxlen=10)
 
 #for the sensor
 i2c = busio.I2C(board.SCL, board.SDA)
@@ -110,7 +110,11 @@ def position(frame, timestamp_c, results, last_three_c, correct_index, ledr, led
 
 
 #always start the picam2 after the picam configuration
+cam_start1 = time.time()
 picam2.start()
+cam_start2 = time.time()
+cam_start = cam_start2-cam_start1
+print(f"CAMERA START TIME: {cam_start}")
 time.sleep(2)
 
 camera_buffer = deque(maxlen=20) #removes frames when the buffer gets too large
@@ -128,6 +132,8 @@ while True:
     distance = 0
     timestamp1 = time.time()
     areas = []
+    last_ten_box = deque(maxlen=10)
+    last_ten_box = []
     areas = deque(maxlen=10)
     frame = picam2.capture_array()
     timestamp_c = time.monotonic_ns() #does not jump even if system clock changes
