@@ -6,9 +6,11 @@ import numpy
 from PIL import Image
 from matplotlib import cm
 import numpy as np
+from gpiozero import LED
 
-COLOR_MAP = "plasma"
-INVERSE = True
+loopcount = 0
+ledl = LED(5)
+ledr = LED(4)
 
 vl53 = vl53l5cx.VL53L5CX()
 # This is a visual demo, so prefer speed over accuracy
@@ -16,13 +18,28 @@ vl53.set_ranging_frequency_hz(15)
 vl53.set_integration_time_ms(20)
 vl53.start_ranging()
 
+def led_buzzer_control(cx, distance, ledr, ledl):
+    x = cx/640   #the position of object is a fraction from 0 to 1, 0 is left#turns on the led for a time based on distance
+    if (cx>0 and cx<320) and distance < 1000:
+        print("left")
+        ledr.off()
+        ledl.blink(on_time=0.25, off_time=(distance*x)/100)
+    elif (cx>=320 and cx<640) and distance < 1000:
+        print("right")
+        ledl.off()
+        ledr.blink(on_time=0.25, off_time=(distance/100*x))
+    else:
+        ledr.off()
+        ledl.off()
 
+    
 while True:
     true_cnt = 0
     if vl53.data_ready():
         data = vl53.get_data()
         arr = np.flipud(np.array(data.distance_mm).reshape((8, 8))).astype('float64')
 
+        #MINIMUM DISTANCE DETECTION
         min_distance = arr.min()
         
         min_position = np.argwhere(arr == min_distance)
