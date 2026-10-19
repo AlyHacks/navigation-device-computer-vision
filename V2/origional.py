@@ -54,6 +54,7 @@ vl53.start_ranging()
 
 
 while True:
+    true_cnt = 0
     if vl53.data_ready():
         data = vl53.get_data()
         arr = np.flipud(np.array(data.distance_mm).reshape((8, 8))).astype('float64')
@@ -68,6 +69,11 @@ while True:
         elif column >= 4 and column <= 7:
             print("Object is on the right side of the sensor")
         
+        if abs(min_position-(arr[row+1, column] or arr[row-1, column] or arr[row, column+1] or arr[row, column-1])) <= 10:
+            true_cnt += 1
+        if true_cnt >= 3:
+            #obtain position of the object since 
+            print("Object is centered in front of the sensor")
         # Scale view relative to the furthest distance
         # distance = arr.max()
 
