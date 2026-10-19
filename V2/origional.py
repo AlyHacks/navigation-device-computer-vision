@@ -10,42 +10,6 @@ import numpy as np
 COLOR_MAP = "plasma"
 INVERSE = True
 
-'''
-def get_palette(name):
-    cmap = cm.get_cmap(name, 256)
-
-    try:
-        colors = cmap.colors
-    except AttributeError:
-        colors = numpy.array([cmap(i) for i in range(256)], dtype=float)
-
-    arr = numpy.array(colors * 255).astype('uint8')
-    arr = arr.reshape((16, 16, 4))
-    arr = arr[:, :, 0:3]
-    return arr.tobytes()
-
-
-display = ST7789.ST7789(
-    width=240,
-    height=240,
-    rotation=90,
-    port=0,
-    cs=ST7789.BG_SPI_CS_BACK,  # Otherwise it will block the sensor!
-    dc=9,
-    backlight=18,
-    spi_speed_hz=80 * 1000 * 1000,
-    offset_left=0,
-    offset_top=0
-)
-
-pal = get_palette(COLOR_MAP)
-
-print("Uploading firmware, please wait...")
-vl53 = vl53l5cx.VL53L5CX()
-print("Done!")
-vl53.set_resolution(8 * 8)
-'''
-
 vl53 = vl53l5cx.VL53L5CX()
 # This is a visual demo, so prefer speed over accuracy
 vl53.set_ranging_frequency_hz(15)
