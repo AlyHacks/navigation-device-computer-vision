@@ -42,31 +42,9 @@ while True:
         # distance = arr.max()
 
         # Scale view to a fixed distance
-        distance = 512
-
-        # Scale and clip the result to 0-255
-        arr *= (255.0 / distance)
-        arr = np.clip(arr, 0, 255)
-
-        # Invert the array : 0 - 255 becomes 255 - 0
-        if INVERSE:
-            arr *= -1
-            arr += 255.0
 
         # Force to int
         arr = arr.astype('uint8')
 
 
     time.sleep(0.01)  # Avoid polling *too* fast
-
-'''
-        # Convert to a palette type image
-        img = Image.frombytes("P", (8, 8), arr)
-        img.putpalette(pal)
-        img = img.convert("RGB")
-        img = img.resize((240, 240), resample=Image.NEAREST)
-
-        # Display the result
-        display.display(img)
-'''
-
