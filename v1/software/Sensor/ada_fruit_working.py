@@ -1,10 +1,10 @@
 import board
 import busio
-import adafruit_vl53l1x
+import adafruit_vl53l5cx
 import time
 
 i2c = busio.I2C(board.SCL, board.SDA)
-sensor = adafruit_vl53l1x.VL53L1X(i2c)
+sensor = adafruit_vl53l5cx.VL53L1X(i2c)
 
 def start_ranging():
     sensor.start_ranging(1)
@@ -17,3 +17,4 @@ while True:
     if KeyboardInterrupt:
         break
 sensor.clear_interrupt()
+
