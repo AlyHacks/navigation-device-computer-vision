@@ -64,16 +64,16 @@ while True:
         min_position = np.argwhere(arr == min_distance)
         row, column = np.where(arr == min_distance)
 
-        if column >= 0 and column <= 3:
-            print("Object is on the left side of the sensor")
-        elif column >= 4 and column <= 7:
-            print("Object is on the right side of the sensor")
+
         
         if abs(min_position-(arr[row+1, column] or arr[row-1, column] or arr[row, column+1] or arr[row, column-1])) <= 10:
             true_cnt += 1
         if true_cnt >= 3:
+            if column >= 0 and column <= 3:
+                print("Object is on the left side of the sensor")
+            elif column >= 4 and column <= 7:
+                print("Object is on the right side of the sensor")
             #obtain position of the object since 
-            print("Object is centered in front of the sensor")
         # Scale view relative to the furthest distance
         # distance = arr.max()
 
