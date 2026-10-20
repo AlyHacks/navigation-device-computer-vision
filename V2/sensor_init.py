@@ -1,7 +1,7 @@
 
 import time
 import vl53l5cx_ctypes as vl53l5cx
-import ST7789
+import st7789
 import numpy
 from PIL import Image
 from matplotlib import cm
@@ -32,34 +32,40 @@ def led_buzzer_control(cx, distance, ledr, ledl):
         ledr.off()
         ledl.off()
 
-    
-while True:
-    true_cnt = 0
-    if vl53.data_ready():
-        data = vl53.get_data()
-        arr = np.flipud(np.array(data.distance_mm).reshape((8, 8))).astype('float64')
+try:   
+    while True:
+        true_cnt = 0
+        if vl53.data_ready():
+            data = vl53.get_data()
+            arr = np.flipud(np.array(data.distance_mm).reshape((8, 8))).astype('float64')
 
-        #MINIMUM DISTANCE DETECTION
-        min_distance = arr.min()
-        
-        min_position = np.argwhere(arr == min_distance)
-        row, column = min_position[0][0], min_position[0][1]
+            #MINIMUM DISTANCE DETECTION
+            min_distance = arr.min()
+            
+            min_position = np.argwhere(arr == min_distance)
+            row, column = min_position[0][0], min_position[0][1]
+            print(min_distance)
+            for y in (-1, 0, 1):
+                for x in (-1, 0, 1):
 
-        for y in (-1, 0, 1):
-            for x in (-1, 0, 1):
-                if arr[row+y, column+x] <= min_distance+10 and arr[row+y, column+x] >= min_distance-10:
-                    true_cnt += 1
+                    ny = row+y
+                    nx = column+x
+                    if ny < 0 and ny > 8 or nx < 0 and nx > 8:
+                        continue
+                    if arr[ny, nx] <= min_distance+10 and arr[ny, nx] >= min_distance-10:
+                        true_cnt += 1
 
-        if true_cnt >= 3:
-            if column >= 0 and column <= 3:
-                print("Object is on the left side of the sensor")
-            elif column >= 4 and column <= 7:
-                print("Object is on the right side of the sensor")
-        #obtain position of the object since 
-        # Scale view relative to the furthest distance
-        # distance = arr.max()
+            if true_cnt >= 3:
+                if column >= 0 and column <= 3:
+                    print("Object is on the left side of the sensor")
+                elif column >= 4 and column <= 7:
+                    print("Object is on the right side of the sensor")
+            #obtain position of the object since 
+            # Scale view relative to the furthest distance
+            # distance = arr.max()
 
-        # Scale view to a fixed distance
+            # Scale view to a fixed distance
+        time.sleep(0.01)  # Avoid polling *too* fast
 
-
-    time.sleep(0.01)  # Avoid polling *too* fast
+except KeyboardInterrupt:
+    exit()
