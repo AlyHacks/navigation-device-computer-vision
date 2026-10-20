@@ -43,25 +43,23 @@ while True:
         min_distance = arr.min()
         
         min_position = np.argwhere(arr == min_distance)
-        row, column = np.where(arr == min_distance)
+        row, column = min_position[0][0], min_position[0][1]
 
+        for y in (-1, 0, 1):
+            for x in (-1, 0, 1):
+                if arr[row+y, column+x] <= min_distance+10 and arr[row+y, column+x] >= min_distance-10:
+                    true_cnt += 1
 
-        
-        if abs(min_position-(arr[row+1, column] or arr[row-1, column] or arr[row, column+1] or arr[row, column-1])) <= 10:
-            true_cnt += 1
         if true_cnt >= 3:
             if column >= 0 and column <= 3:
                 print("Object is on the left side of the sensor")
             elif column >= 4 and column <= 7:
                 print("Object is on the right side of the sensor")
-            #obtain position of the object since 
+        #obtain position of the object since 
         # Scale view relative to the furthest distance
         # distance = arr.max()
 
         # Scale view to a fixed distance
-
-        # Force to int
-        arr = arr.astype('uint8')
 
 
     time.sleep(0.01)  # Avoid polling *too* fast
