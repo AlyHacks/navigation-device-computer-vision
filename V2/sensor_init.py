@@ -16,6 +16,7 @@ vl53 = vl53l5cx.VL53L5CX()
 # This is a visual demo, so prefer speed over accuracy
 vl53.set_ranging_frequency_hz(15)
 vl53.set_integration_time_ms(20)
+vl53.set_resolution(8*8)
 vl53.start_ranging()
 
 def led_buzzer_control(cx, distance, ledr, ledl):
@@ -44,7 +45,13 @@ try:
             
             min_position = np.argwhere(arr == min_distance)
             row, column = min_position[0][0], min_position[0][1]
+
+            if min_distance == 0:
+                continue
             print(min_distance)
+
+
+
             for y in (-1, 0, 1):
                 for x in (-1, 0, 1):
 
