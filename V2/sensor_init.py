@@ -57,7 +57,7 @@ try:
 
                     ny = row+y
                     nx = column+x
-                    if ny < 0 and ny > 8 or nx < 0 and nx > 8:
+                    if ny < 0 or ny > 8 or nx < 0 or nx > 8:
                         continue
                     if arr[ny, nx] <= min_distance+10 and arr[ny, nx] >= min_distance-10:
                         true_cnt += 1
