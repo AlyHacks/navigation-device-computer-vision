@@ -59,10 +59,10 @@ try:
                     if ny < 0 or ny > 7 or nx < 0 or nx > 7:
                         continue
                     if ny == 0:
-                        if arr[ny-1, nx] <= min_distance+10 and arr[ny-1, nx] >= min_distance-10:
+                        if arr[ny+1, nx] <= min_distance+10 an d arr[ny+1, nx] >= min_distance-10:
                             true_cnt += 1
                     if ny == 7:
-                        if arr[ny+1, nx] <= min_distance+10 and arr[ny+1, nx] >= min_distance-10:
+                        if arr[ny-1, nx] <= min_distance+10 and arr[ny-1, nx] >= min_distance-10:
                             true_cnt += 1
                     if nx == 0:
                         if arr[ny, nx+1] <= min_distance+10 and arr[ny, nx+1] >= min_distance-10:
