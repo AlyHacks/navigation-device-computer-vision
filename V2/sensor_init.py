@@ -19,16 +19,15 @@ vl53.set_integration_time_ms(20)
 vl53.set_resolution(8*8)
 vl53.start_ranging()
 
-def led_buzzer_control(cx, distance, ledr, ledl):
-    x = cx/640   #the position of object is a fraction from 0 to 1, 0 is left#turns on the led for a time based on distance
-    if (cx>0 and cx<320) and distance < 1000:
+def led_buzzer_control(column, distance, ledr, ledl):   #the position of object is a fraction from 0 to 1, 0 is left#turns on the led for a time based on distance
+    if (column>=0 and column<=3) and distance < 1000:
         print("left")
         ledr.off()
-        ledl.blink(on_time=0.25, off_time=(distance*x)/100)
-    elif (cx>=320 and cx<640) and distance < 1000:
+        ledl.blink(on_time=0.25, off_time=(distance)/100)
+    elif (column>3 and column<=7) and distance < 1000:
         print("right")
         ledl.off()
-        ledr.blink(on_time=0.25, off_time=(distance/100*x))
+        ledr.blink(on_time=0.25, off_time=(distance/100))
     else:
         ledr.off()
         ledl.off()
@@ -63,13 +62,8 @@ try:
                         true_cnt += 1
 
             if true_cnt >= 3:
-                if column >= 0 and column <= 3:
-                    print("Object is on the left side of the sensor")
-                elif column >= 4 and column <= 7:
-                    print("Object is on the right side of the sensor")
-            #obtain position of the object since 
-            # Scale view relative to the furthest distance
-            # distance = arr.max()
+                led_buzzer_control(column, min_distance, ledr, ledl)
+
 
             # Scale view to a fixed distance
         time.sleep(0.01)  # Avoid polling *too* fast
