@@ -59,6 +59,10 @@ def min_distance():
         if min_distance > 0 and min_distance < 1000:
             print(min_distance)
             return min_distance, row, column, arr, true_cnt
+        else:
+            print("distance too far or none valid found")
+    else: 
+        print("data not ready")
 
 
 def localization(arr, true_cnt):
